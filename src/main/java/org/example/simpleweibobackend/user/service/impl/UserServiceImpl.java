@@ -3,13 +3,19 @@ package org.example.simpleweibobackend.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
+import org.example.simpleweibobackend.config.TokenBlacklist;
 import org.example.simpleweibobackend.exception.BizException;
+import org.example.simpleweibobackend.user.dto.LoginRequest;
 import org.example.simpleweibobackend.user.dto.RegisterRequest;
 import org.example.simpleweibobackend.user.entity.User;
 import org.example.simpleweibobackend.user.mapper.UserMapper;
 import org.example.simpleweibobackend.user.service.UserService;
+import org.example.simpleweibobackend.user.vo.LoginVO;
 import org.example.simpleweibobackend.user.vo.RegisterVO;
+import org.example.simpleweibobackend.user.vo.UserVO;
+import org.example.simpleweibobackend.util.JwtUtil;
 import org.example.simpleweibobackend.util.PasswordUtil;
+import org.example.simpleweibobackend.util.UserContext;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -19,6 +25,8 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+    private final JwtUtil jwtUtil;
+    private final TokenBlacklist tokenBlacklist;
 
     @Override
     public RegisterVO register(RegisterRequest request) {
@@ -37,5 +45,32 @@ public class UserServiceImpl implements UserService {
         userMapper.insert(user);
 
         return RegisterVO.from(user);
+    }
+
+    @Override
+    public LoginVO login(LoginRequest request) {
+        User user = userMapper.selectOne(new QueryWrapper<User>()
+                .eq("username", request.getUsername()));
+        if (user == null || !PasswordUtil.matches(request.getPassword(), user.getPassword())) {
+            throw new BizException(ErrorCode.UNAUTHORIZED, "用户名或密码错误");
+        }
+        String token = jwtUtil.generateToken(user.getId());
+        return LoginVO.from(user, token);
+    }
+
+    @Override
+    public void logout(String token) {
+        long expiry = jwtUtil.getExpirationFromToken(token);
+        tokenBlacklist.add(token, expiry);
+    }
+
+    @Override
+    public UserVO getCurrentUser() {
+        Long userId = UserContext.getUserId();
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new BizException(ErrorCode.NOT_FOUND, "用户不存在");
+        }
+        return UserVO.from(user);
     }
 }

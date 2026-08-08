@@ -11,3 +11,7 @@ spring:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
+
+jwt:
+  secret: SimpleWeibo2026JwtSecretKeyForHmacSha256AlgorithmMin32Bytes
+  expiration: 604800000  # 7天（毫秒）
