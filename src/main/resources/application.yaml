@@ -1,3 +1,6 @@
+server:
+  port: 8123
+
 spring:
   application:
     name: SimpleWeibo-backend
