@@ -28,11 +28,12 @@ public class ApiCallStatAspect {
             HttpServletRequest request = ((ServletRequestAttributes)
                     RequestContextHolder.currentRequestAttributes()).getRequest();
             String httpMethod = request.getMethod();
-            String apiPath = resolveApiPath(request);
 
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             String controllerClass = signature.getDeclaringType().getSimpleName();
             String controllerMethod = signature.getName();
+
+            String apiPath = resolveApiPath(request, controllerClass, controllerMethod);
 
             apiCallStatBuffer.increment(apiPath, httpMethod, controllerClass, controllerMethod);
         } catch (Exception e) {
@@ -40,11 +41,13 @@ public class ApiCallStatAspect {
         }
     }
 
-    private String resolveApiPath(HttpServletRequest request) {
+    private String resolveApiPath(HttpServletRequest request,
+                                  String controllerClass, String controllerMethod) {
         Object pattern = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         if (pattern != null) {
             return pattern.toString();
         }
-        return request.getRequestURI();
+        // 降级：用 控制器类名#方法名 替代原始 URI，确保 buffer 条目数始终有界
+        return controllerClass + "#" + controllerMethod;
     }
 }

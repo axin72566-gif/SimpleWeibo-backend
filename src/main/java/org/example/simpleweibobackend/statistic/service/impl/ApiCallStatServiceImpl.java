@@ -17,18 +17,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApiCallStatServiceImpl implements ApiCallStatService {
 
+    private static final int BATCH_SIZE = 200;
+
     private final ApiCallStatMapper apiCallStatMapper;
 
     @Override
     public void flushBatch(List<CallStatDelta> deltas) {
-        for (CallStatDelta delta : deltas) {
-            apiCallStatMapper.upsertCallCount(
-                    delta.apiPath(),
-                    delta.httpMethod(),
-                    delta.controllerClass(),
-                    delta.controllerMethod(),
-                    delta.count(),
-                    delta.lastCallTime());
+        if (deltas.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < deltas.size(); i += BATCH_SIZE) {
+            List<CallStatDelta> batch = deltas.subList(i, Math.min(i + BATCH_SIZE, deltas.size()));
+            apiCallStatMapper.batchUpsertCallCount(batch);
         }
     }
 

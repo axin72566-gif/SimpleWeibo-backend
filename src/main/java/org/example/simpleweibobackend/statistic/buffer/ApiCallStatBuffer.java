@@ -65,7 +65,8 @@ public class ApiCallStatBuffer {
 
     private List<CallStatDelta> drain() {
         List<CallStatDelta> deltas = new ArrayList<>();
-        buffer.forEach((key, counter) -> {
+        buffer.entrySet().removeIf(entry -> {
+            CallCounter counter = entry.getValue();
             long delta = counter.count.sumThenReset();
             if (delta > 0) {
                 LocalDateTime lastCallTime = LocalDateTime.ofInstant(
@@ -74,7 +75,9 @@ public class ApiCallStatBuffer {
                         counter.apiPath, counter.httpMethod,
                         counter.controllerClass, counter.controllerMethod,
                         delta, lastCallTime));
+                return false;
             }
+            return true;
         });
         return deltas;
     }
