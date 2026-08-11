@@ -1,12 +1,14 @@
 package org.example.simpleweibobackend.statistic.service;
 
+import org.example.simpleweibobackend.common.PageVO;
+import org.example.simpleweibobackend.statistic.dto.CallStatDelta;
 import org.example.simpleweibobackend.statistic.vo.ApiCallStatVO;
 
 import java.util.List;
 
 public interface ApiCallStatService {
 
-    void recordCall(String apiPath, String httpMethod, String controllerClass, String controllerMethod);
+    void flushBatch(List<CallStatDelta> deltas);
 
-    List<ApiCallStatVO> list();
+    PageVO<ApiCallStatVO> list(int page, int size);
 }
