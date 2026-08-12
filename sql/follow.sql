@@ -7,6 +7,7 @@ create table follow
     create_time  datetime default CURRENT_TIMESTAMP null comment '创建时间',
     update_time  datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
     constraint uk_follower_following
-        unique (follower_id, following_id)
+        unique (follower_id, following_id),
+    index idx_following_follower (following_id, follower_id)
 )
     comment '用户关注关系表' collate = utf8mb4_unicode_ci;
