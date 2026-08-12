@@ -51,8 +51,8 @@ class FeedFanoutBenchmarkTest {
         // 确保依赖的表和索引存在
         ensureSchema();
 
-        log.info("=== Feed Fanout 基准测试 ===");
-        log.info("环境: HikariCP连接池=10(默认), Tomcat线程=200(默认), MySQL本地单实例");
+        log.info("=== Feed Fanout 基准测试 (MQ异步模式) ===");
+        log.info("环境: HikariCP连接池=10(默认), Tomcat线程=200(默认), MySQL本地单实例, RabbitMQ异步消费");
         log.info("");
 
         int[][] configs = {
@@ -68,8 +68,8 @@ class FeedFanoutBenchmarkTest {
                 {100, 100},
         };
 
-        log.info("| m   | n    | 总耗时(ms) | 成功率   | 平均(ms) | P50(ms) | P95(ms) | P99(ms) | feed行数 | 预期行数 |");
-        log.info("|-----|------|-----------|---------|---------|---------|---------|---------|---------|---------|");
+        log.info("| m   | n    | 发帖(ms) | 成功率   | 平均(ms) | P50(ms) | P95(ms) | P99(ms) | 消费(ms) | feed行数 | 预期行数 |");
+        log.info("|-----|------|---------|---------|---------|---------|---------|---------|---------|---------|---------|");
 
         for (int[] config : configs) {
             int m = config[0];
@@ -77,11 +77,11 @@ class FeedFanoutBenchmarkTest {
             try {
                 BenchmarkResult result = runBenchmark(m, n);
                 int expected = result.successCount() * (n + 1);
-                log.info(String.format("| %-3d | %-4d | %-9d | %-7s | %-7d | %-7d | %-7d | %-7d | %-7d | %-7d |",
+                log.info(String.format("| %-3d | %-4d | %-7d | %-7s | %-7d | %-7d | %-7d | %-7d | %-7d | %-7d | %-7d |",
                         m, n, result.totalTimeMs(),
                         result.successCount() + "/" + m,
                         result.avgMs(), result.p50Ms(), result.p95Ms(), result.p99Ms(),
-                        result.feedItemCount(), expected));
+                        result.consumerTimeMs(), result.feedItemCount(), expected));
             } catch (Exception e) {
                 log.error(String.format("| %-3d | %-4d | 测试失败: %s", m, n, e.getMessage()));
             }
@@ -164,15 +164,30 @@ class FeedFanoutBenchmarkTest {
                 : validLatencies.get(Math.min((int) (validLatencies.size() * 0.95), validLatencies.size() - 1));
         long p99 = validLatencies.isEmpty() ? -1 : validLatencies.get(validLatencies.size() - 1);
 
-        // 4. 统计 feed_item 行数
+        // 4. 等待 Consumer 异步消费完成，轮询 feed_item 行数
+        long expectedFeedCount = (long) successCount * (n + 1);
         long feedCount = 0;
-        if (!createdPostIds.isEmpty()) {
-            String postIds = createdPostIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-            feedCount = jdbcTemplate.queryForObject(
-                    "SELECT COUNT(*) FROM feed_item WHERE post_id IN (" + postIds + ")", Long.class);
+        long consumerStart = System.nanoTime();
+        int maxPollRounds = 600; // 60s 超时 (100ms * 600)
+        int pollRounds = 0;
+        while (pollRounds < maxPollRounds) {
+            if (!createdPostIds.isEmpty()) {
+                String postIds = createdPostIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+                feedCount = jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM feed_item WHERE post_id IN (" + postIds + ")", Long.class);
+            }
+            if (feedCount >= expectedFeedCount) {
+                break;
+            }
+            Thread.sleep(100);
+            pollRounds++;
+        }
+        long consumerTime = (System.nanoTime() - consumerStart) / 1_000_000;
+        if (feedCount < expectedFeedCount) {
+            log.warn("m={}, n={}: Consumer 未在 60s 内完成消费, feed={}/{}", m, n, feedCount, expectedFeedCount);
         }
 
-        return new BenchmarkResult(totalTime, successCount, avg, p50, p95, p99, feedCount);
+        return new BenchmarkResult(totalTime, successCount, avg, p50, p95, p99, feedCount, consumerTime);
     }
 
     private List<Long> createUsers(int count, String prefix) {
@@ -246,6 +261,7 @@ class FeedFanoutBenchmarkTest {
     }
 
     private record BenchmarkResult(long totalTimeMs, int successCount, long avgMs,
-                                   long p50Ms, long p95Ms, long p99Ms, long feedItemCount) {
+                                   long p50Ms, long p95Ms, long p99Ms, long feedItemCount,
+                                   long consumerTimeMs) {
     }
 }
