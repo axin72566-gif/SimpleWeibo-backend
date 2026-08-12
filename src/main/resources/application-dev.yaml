@@ -7,6 +7,23 @@ spring:
     username: root
     password: 123456
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: 123456
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          multiplier: 2
+          max-interval: 10000
+          max-retries: 3
+        default-requeue-rejected: false
+        concurrency: 1
+        prefetch: 5
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
