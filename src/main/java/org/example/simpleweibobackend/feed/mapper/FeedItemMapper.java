@@ -12,7 +12,7 @@ import java.util.List;
 public interface FeedItemMapper extends BaseMapper<FeedItem> {
 
     @Insert("<script>" +
-            "INSERT INTO feed_item (user_id, post_id, post_user_id) VALUES " +
+            "INSERT IGNORE INTO feed_item (user_id, post_id, post_user_id) VALUES " +
             "<foreach collection='items' item='item' separator=','>" +
             "(#{item.userId}, #{item.postId}, #{item.postUserId})" +
             "</foreach>" +

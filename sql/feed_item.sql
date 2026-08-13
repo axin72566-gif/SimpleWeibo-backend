@@ -7,6 +7,7 @@ create table feed_item
     post_user_id bigint unsigned                     not null comment '发帖人用户ID',
     create_time  datetime default CURRENT_TIMESTAMP null comment '创建时间',
     update_time  datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
-    index idx_user_create (user_id, create_time desc)
+    index idx_user_create (user_id, create_time desc),
+    constraint uk_user_post unique (user_id, post_id)
 )
     comment 'Feed收件箱表' collate = utf8mb4_unicode_ci;

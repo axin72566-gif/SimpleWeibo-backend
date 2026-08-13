@@ -241,10 +241,24 @@ class FeedFanoutBenchmarkTest {
                 "update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间', " +
                 "index idx_user_create (user_id, create_time desc)" +
                 ") collate = utf8mb4_unicode_ci");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS outbox (" +
+                "id bigint unsigned auto_increment primary key comment '消息ID', " +
+                "post_id bigint unsigned not null comment '帖子ID', " +
+                "user_id bigint unsigned not null comment '发帖人用户ID', " +
+                "status varchar(20) default 'PENDING' not null comment '发送状态', " +
+                "create_time datetime default CURRENT_TIMESTAMP null comment '创建时间', " +
+                "update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间', " +
+                "index idx_status_create (status, create_time)" +
+                ") collate = utf8mb4_unicode_ci");
         try {
             jdbcTemplate.execute("CREATE INDEX idx_following_follower ON follow(following_id, follower_id)");
         } catch (Exception ignored) {
             // 索引已存在
+        }
+        try {
+            jdbcTemplate.execute("ALTER TABLE feed_item ADD CONSTRAINT uk_user_post UNIQUE (user_id, post_id)");
+        } catch (Exception ignored) {
+            // 唯一约束已存在
         }
     }
 
@@ -253,6 +267,7 @@ class FeedFanoutBenchmarkTest {
             return;
         }
         String ids = currentUserIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        jdbcTemplate.execute("DELETE FROM outbox WHERE user_id IN (" + ids + ")");
         jdbcTemplate.execute("DELETE FROM feed_item WHERE user_id IN (" + ids + ") OR post_user_id IN (" + ids + ")");
         jdbcTemplate.execute("DELETE FROM post WHERE user_id IN (" + ids + ")");
         jdbcTemplate.execute("DELETE FROM follow WHERE follower_id IN (" + ids + ") OR following_id IN (" + ids + ")");
