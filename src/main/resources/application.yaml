@@ -15,3 +15,14 @@ mybatis-plus:
 jwt:
   secret: SimpleWeibo2026JwtSecretKeyForHmacSha256AlgorithmMin32Bytes
   expiration: 604800000  # 7天（毫秒）
+
+# Springdoc OpenAPI 文档
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+
+# Knife4j 接口文档
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN

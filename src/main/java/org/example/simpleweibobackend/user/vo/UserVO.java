@@ -1,19 +1,25 @@
 package org.example.simpleweibobackend.user.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.simpleweibobackend.user.entity.User;
 
 @Data
 @AllArgsConstructor
+@Schema(description = "用户信息")
 public class UserVO {
 
+    @Schema(description = "用户ID")
     private Long id;
 
+    @Schema(description = "用户名")
     private String username;
 
+    @Schema(description = "昵称")
     private String nickname;
 
+    @Schema(description = "个人简介")
     private String bio;
 
     public static UserVO from(User user) {

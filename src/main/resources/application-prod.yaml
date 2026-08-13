@@ -6,3 +6,7 @@ spring:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:simple_weibo}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=true
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:}
+
+# 生产环境关闭接口文档
+knife4j:
+  production: true
