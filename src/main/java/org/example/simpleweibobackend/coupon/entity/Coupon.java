@@ -19,6 +19,8 @@ public class Coupon extends BaseEntity {
 
     private Integer totalQuantity;
 
+    private Integer stockRemaining;
+
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;

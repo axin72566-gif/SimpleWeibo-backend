@@ -12,6 +12,7 @@ import org.example.simpleweibobackend.coupon.mapper.CouponMapper;
 import org.example.simpleweibobackend.coupon.service.CouponService;
 import org.example.simpleweibobackend.coupon.vo.CouponVO;
 import org.example.simpleweibobackend.exception.BizException;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponMapper couponMapper;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
     public CouponVO create(CreateCouponRequest request) {
@@ -46,7 +48,14 @@ public class CouponServiceImpl implements CouponService {
         if (coupon.getStatus() != CouponStatus.DRAFT) {
             throw new BizException(ErrorCode.BAD_REQUEST, "仅草稿状态的优惠券可发布");
         }
-        updateStatus(id, CouponStatus.PUBLISHED);
+        // 更新状态并初始化库存
+        Coupon update = new Coupon();
+        update.setId(id);
+        update.setStatus(CouponStatus.PUBLISHED);
+        update.setStockRemaining(coupon.getTotalQuantity());
+        couponMapper.updateById(update);
+        // 预热 Redis 库存
+        redisTemplate.opsForValue().set("coupon:stock:" + id, String.valueOf(coupon.getTotalQuantity()));
     }
 
     @Override

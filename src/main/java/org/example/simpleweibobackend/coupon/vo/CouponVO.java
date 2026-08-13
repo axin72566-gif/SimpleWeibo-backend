@@ -25,6 +25,9 @@ public class CouponVO {
     @Schema(description = "发行总量")
     private Integer totalQuantity;
 
+    @Schema(description = "剩余库存")
+    private Integer stockRemaining;
+
     @Schema(description = "生效开始时间")
     private LocalDateTime startTime;
 
@@ -39,7 +42,7 @@ public class CouponVO {
 
     public static CouponVO from(Coupon coupon) {
         return new CouponVO(coupon.getId(), coupon.getName(), coupon.getDiscountRate(),
-                coupon.getTotalQuantity(), coupon.getStartTime(), coupon.getEndTime(),
+                coupon.getTotalQuantity(), coupon.getStockRemaining(), coupon.getStartTime(), coupon.getEndTime(),
                 coupon.getStatus(), coupon.getCreateTime());
     }
 }
