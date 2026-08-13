@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.example.simpleweibobackend.common.RequireRole;
+import org.example.simpleweibobackend.common.Role;
 import org.example.simpleweibobackend.common.PageVO;
 import org.example.simpleweibobackend.common.Result;
 import org.example.simpleweibobackend.statistic.service.ApiCallStatService;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequireRole(Role.ADMIN)
 @Tag(name = "接口调用统计")
 @RestController
 @RequestMapping("/api/statistics")

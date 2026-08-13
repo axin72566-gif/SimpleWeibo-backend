@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         if (user == null || !PasswordUtil.matches(request.getPassword(), user.getPassword())) {
             throw new BizException(ErrorCode.UNAUTHORIZED, "用户名或密码错误");
         }
-        String token = jwtUtil.generateToken(user.getId());
+        String token = jwtUtil.generateToken(user.getId(), user.getRole());
         return LoginVO.from(user, token);
     }
 
