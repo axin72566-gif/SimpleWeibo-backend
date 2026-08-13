@@ -3,7 +3,6 @@ package org.example.simpleweibobackend.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
-import org.example.simpleweibobackend.config.TokenBlacklist;
 import org.example.simpleweibobackend.exception.BizException;
 import org.example.simpleweibobackend.user.dto.LoginRequest;
 import org.example.simpleweibobackend.user.dto.RegisterRequest;
@@ -26,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
-    private final TokenBlacklist tokenBlacklist;
 
     @Override
     public RegisterVO register(RegisterRequest request) {
@@ -60,8 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void logout(String token) {
-        long expiry = jwtUtil.getExpirationFromToken(token);
-        tokenBlacklist.add(token, expiry);
+        jwtUtil.blacklist(token);
     }
 
     @Override

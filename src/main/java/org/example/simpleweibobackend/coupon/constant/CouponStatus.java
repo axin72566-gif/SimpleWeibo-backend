@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.common;
+package org.example.simpleweibobackend.coupon.constant;
 
 public enum CouponStatus {
     DRAFT, PUBLISHED, OFFLINE

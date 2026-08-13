@@ -3,16 +3,24 @@ package org.example.simpleweibobackend.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.example.simpleweibobackend.common.Role;
+import lombok.RequiredArgsConstructor;
+import org.example.simpleweibobackend.user.constant.Role;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
+
+    private static final String BLACKLIST_KEY_PREFIX = "token:blacklist:";
+
+    private final StringRedisTemplate redisTemplate;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -53,7 +61,7 @@ public class JwtUtil {
         return Role.valueOf(claims.get("role", String.class));
     }
 
-    public long getExpirationFromToken(String token) {
+    private long getExpirationFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
@@ -61,5 +69,16 @@ public class JwtUtil {
                 .getPayload()
                 .getExpiration()
                 .getTime();
+    }
+
+    public void blacklist(String token) {
+        long timeout = getExpirationFromToken(token) - System.currentTimeMillis();
+        if (timeout > 0) {
+            redisTemplate.opsForValue().set(BLACKLIST_KEY_PREFIX + token, "1", timeout, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    public boolean isBlacklisted(String token) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(BLACKLIST_KEY_PREFIX + token));
     }
 }

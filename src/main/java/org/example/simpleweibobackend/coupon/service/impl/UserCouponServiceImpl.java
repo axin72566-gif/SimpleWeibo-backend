@@ -2,7 +2,7 @@ package org.example.simpleweibobackend.coupon.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.simpleweibobackend.common.CouponStatus;
+import org.example.simpleweibobackend.coupon.constant.CouponStatus;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.coupon.config.SeckillMqConfig;
 import org.example.simpleweibobackend.coupon.dto.CouponSeckillEvent;

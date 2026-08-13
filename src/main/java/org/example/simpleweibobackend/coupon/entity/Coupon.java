@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.simpleweibobackend.common.BaseEntity;
-import org.example.simpleweibobackend.common.CouponStatus;
+import org.example.simpleweibobackend.coupon.constant.CouponStatus;
 
 import java.time.LocalDateTime;
 

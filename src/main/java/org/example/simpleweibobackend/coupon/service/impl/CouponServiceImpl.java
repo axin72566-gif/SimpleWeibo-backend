@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.PageVO;
-import org.example.simpleweibobackend.common.CouponStatus;
+import org.example.simpleweibobackend.coupon.constant.CouponStatus;
 import org.example.simpleweibobackend.coupon.dto.CreateCouponRequest;
 import org.example.simpleweibobackend.coupon.entity.Coupon;
 import org.example.simpleweibobackend.coupon.mapper.CouponMapper;

@@ -3,7 +3,7 @@ package org.example.simpleweibobackend.coupon.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.simpleweibobackend.common.CouponStatus;
+import org.example.simpleweibobackend.coupon.constant.CouponStatus;
 import org.example.simpleweibobackend.coupon.entity.Coupon;
 
 import java.time.LocalDateTime;

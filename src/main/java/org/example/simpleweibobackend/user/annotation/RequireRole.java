@@ -1,4 +1,6 @@
-package org.example.simpleweibobackend.common;
+package org.example.simpleweibobackend.user.annotation;
+
+import org.example.simpleweibobackend.user.constant.Role;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

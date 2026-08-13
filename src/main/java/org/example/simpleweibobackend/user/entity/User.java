@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.simpleweibobackend.common.BaseEntity;
-import org.example.simpleweibobackend.common.Role;
+import org.example.simpleweibobackend.user.constant.Role;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
