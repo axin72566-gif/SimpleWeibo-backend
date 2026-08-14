@@ -25,6 +25,7 @@ public class PostServiceImpl implements PostService {
         Long userId = UserContext.getUserId();
         Post post = new Post();
         post.setUserId(userId);
+        post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         postMapper.insert(post);
 

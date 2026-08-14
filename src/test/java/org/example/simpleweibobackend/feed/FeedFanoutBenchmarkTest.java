@@ -116,6 +116,7 @@ class FeedFanoutBenchmarkTest {
                 try {
                     UserContext.setUserId(bloggerId);
                     CreatePostRequest req = new CreatePostRequest();
+                    req.setTitle("benchmark-" + idx);
                     req.setContent("benchmark post by blogger " + bloggerId);
                     readyLatch.countDown();
                     startLatch.await();

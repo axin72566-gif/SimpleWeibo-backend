@@ -18,6 +18,9 @@ public class PostVO {
     @Schema(description = "发布者用户ID")
     private Long userId;
 
+    @Schema(description = "帖子标题")
+    private String title;
+
     @Schema(description = "帖子内容")
     private String content;
 
@@ -26,6 +29,6 @@ public class PostVO {
 
     public static PostVO from(Post post) {
         return new PostVO(post.getId(), post.getUserId(),
-                post.getContent(), post.getCreateTime());
+                post.getTitle(), post.getContent(), post.getCreateTime());
     }
 }

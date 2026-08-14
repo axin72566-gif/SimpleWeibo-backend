@@ -12,5 +12,7 @@ public class Post extends BaseEntity {
 
     private Long userId;
 
+    private String title;
+
     private String content;
 }
