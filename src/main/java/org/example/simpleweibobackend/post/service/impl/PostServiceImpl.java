@@ -7,7 +7,12 @@ import org.example.simpleweibobackend.post.dto.CreatePostRequest;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
 import org.example.simpleweibobackend.post.service.PostService;
+import org.example.simpleweibobackend.common.ErrorCode;
+import org.example.simpleweibobackend.exception.BizException;
+import org.example.simpleweibobackend.post.vo.PostDetailVO;
 import org.example.simpleweibobackend.post.vo.PostVO;
+import org.example.simpleweibobackend.user.entity.User;
+import org.example.simpleweibobackend.user.mapper.UserMapper;
 import org.example.simpleweibobackend.util.UserContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +23,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostMapper postMapper;
     private final OutboxMapper outboxMapper;
+    private final UserMapper userMapper;
 
     @Override
     @Transactional
@@ -36,5 +42,15 @@ public class PostServiceImpl implements PostService {
         outboxMapper.insert(outbox);
 
         return PostVO.from(post);
+    }
+
+    @Override
+    public PostDetailVO getPostDetail(Long id) {
+        Post post = postMapper.selectById(id);
+        if (post == null) {
+            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
+        }
+        User author = userMapper.selectById(post.getUserId());
+        return PostDetailVO.from(post, author);
     }
 }
