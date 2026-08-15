@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.user.follow.service;
+package org.example.simpleweibobackend.user.service;
 
 public interface FollowService {
 

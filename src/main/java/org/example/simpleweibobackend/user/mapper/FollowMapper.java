@@ -1,10 +1,10 @@
-package org.example.simpleweibobackend.user.follow.mapper;
+package org.example.simpleweibobackend.user.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.example.simpleweibobackend.user.follow.entity.Follow;
+import org.example.simpleweibobackend.user.entity.Follow;
 
 import java.util.List;
 

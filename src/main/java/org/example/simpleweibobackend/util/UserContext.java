@@ -1,6 +1,6 @@
 package org.example.simpleweibobackend.util;
 
-import org.example.simpleweibobackend.user.constant.Role;
+import org.example.simpleweibobackend.common.Role;
 
 public final class UserContext {
 

@@ -1,11 +1,11 @@
-package org.example.simpleweibobackend.user.follow.controller;
+package org.example.simpleweibobackend.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.Result;
-import org.example.simpleweibobackend.user.follow.service.FollowService;
+import org.example.simpleweibobackend.user.service.FollowService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

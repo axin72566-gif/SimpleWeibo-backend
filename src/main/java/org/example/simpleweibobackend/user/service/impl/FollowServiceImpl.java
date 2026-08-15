@@ -1,14 +1,14 @@
-package org.example.simpleweibobackend.user.follow.service.impl;
+package org.example.simpleweibobackend.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.exception.BizException;
-import org.example.simpleweibobackend.user.follow.entity.Follow;
-import org.example.simpleweibobackend.user.follow.mapper.FollowMapper;
-import org.example.simpleweibobackend.user.follow.service.FollowService;
+import org.example.simpleweibobackend.user.entity.Follow;
 import org.example.simpleweibobackend.user.entity.User;
+import org.example.simpleweibobackend.user.mapper.FollowMapper;
 import org.example.simpleweibobackend.user.mapper.UserMapper;
+import org.example.simpleweibobackend.user.service.FollowService;
 import org.example.simpleweibobackend.util.UserContext;
 import org.springframework.stereotype.Service;
 

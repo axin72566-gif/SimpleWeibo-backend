@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.user.follow.entity;
+package org.example.simpleweibobackend.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

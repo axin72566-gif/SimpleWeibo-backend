@@ -3,7 +3,7 @@ package org.example.simpleweibobackend.user.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.simpleweibobackend.user.constant.Role;
+import org.example.simpleweibobackend.common.Role;
 import org.example.simpleweibobackend.user.entity.User;
 
 @Data

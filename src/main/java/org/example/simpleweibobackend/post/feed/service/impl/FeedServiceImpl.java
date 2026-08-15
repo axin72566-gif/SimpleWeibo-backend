@@ -7,7 +7,7 @@ import org.example.simpleweibobackend.common.PageVO;
 import org.example.simpleweibobackend.post.feed.entity.FeedItem;
 import org.example.simpleweibobackend.post.feed.mapper.FeedItemMapper;
 import org.example.simpleweibobackend.post.feed.service.FeedService;
-import org.example.simpleweibobackend.user.follow.mapper.FollowMapper;
+import org.example.simpleweibobackend.user.mapper.FollowMapper;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
 import org.example.simpleweibobackend.post.vo.PostVO;
