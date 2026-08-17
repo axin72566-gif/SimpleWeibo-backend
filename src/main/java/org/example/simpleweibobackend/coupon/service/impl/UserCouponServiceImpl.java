@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.coupon.service.impl;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.coupon.constant.CouponStatus;
@@ -26,6 +27,7 @@ import java.util.List;
 public class UserCouponServiceImpl implements UserCouponService {
 
     private final CouponMapper couponMapper;
+    private final Cache<Long, Coupon> couponCache;
     private final StringRedisTemplate redisTemplate;
     private final RabbitTemplate rabbitTemplate;
     private final DefaultRedisScript<Long> seckillScript;
@@ -34,8 +36,8 @@ public class UserCouponServiceImpl implements UserCouponService {
     public UserCouponVO seckill(Long couponId) {
         Long userId = UserContext.getUserId();
 
-        // 1. 校验优惠券状态与时间窗口
-        Coupon coupon = couponMapper.selectById(couponId);
+        // 1. 校验优惠券状态与时间窗口（本地缓存挡住热点查询，未命中才回源DB）
+        Coupon coupon = couponCache.get(couponId, couponMapper::selectById);
         if (coupon == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "优惠券不存在");
         }

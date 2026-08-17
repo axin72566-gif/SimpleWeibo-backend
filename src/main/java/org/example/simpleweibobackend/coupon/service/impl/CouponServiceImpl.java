@@ -2,6 +2,7 @@ package org.example.simpleweibobackend.coupon.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.PageVO;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponMapper couponMapper;
+    private final Cache<Long, Coupon> couponCache;
     private final StringRedisTemplate redisTemplate;
 
     @Override
@@ -48,14 +50,13 @@ public class CouponServiceImpl implements CouponService {
         if (coupon.getStatus() != CouponStatus.DRAFT) {
             throw new BizException(ErrorCode.BAD_REQUEST, "仅草稿状态的优惠券可发布");
         }
-        // 更新状态并初始化库存
-        Coupon update = new Coupon();
-        update.setId(id);
-        update.setStatus(CouponStatus.PUBLISHED);
-        update.setStockRemaining(coupon.getTotalQuantity());
-        couponMapper.updateById(update);
-        // 预热 Redis 库存
+        // 更新状态并初始化库存，直接复用实体：DB更新与缓存预热同一份数据
+        coupon.setStatus(CouponStatus.PUBLISHED);
+        coupon.setStockRemaining(coupon.getTotalQuantity());
+        couponMapper.updateById(coupon);
+        // 预热缓存：Redis库存 + 本地coupon实体，发布后秒杀链路全程免回源
         redisTemplate.opsForValue().set("coupon:stock:" + id, String.valueOf(coupon.getTotalQuantity()));
+        couponCache.put(id, coupon);
     }
 
     @Override
@@ -65,6 +66,8 @@ public class CouponServiceImpl implements CouponService {
             throw new BizException(ErrorCode.BAD_REQUEST, "仅已发布状态的优惠券可下架");
         }
         updateStatus(id, CouponStatus.OFFLINE);
+        // 失效本地缓存，下架立即对秒杀生效
+        couponCache.invalidate(id);
     }
 
     @Override
@@ -90,6 +93,7 @@ public class CouponServiceImpl implements CouponService {
             throw new BizException(ErrorCode.BAD_REQUEST, "仅草稿状态的优惠券可删除");
         }
         couponMapper.deleteById(id);
+        couponCache.invalidate(id);
     }
 
     private Coupon getCouponOrThrow(Long id) {
