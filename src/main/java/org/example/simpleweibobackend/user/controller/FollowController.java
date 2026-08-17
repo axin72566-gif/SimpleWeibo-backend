@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.example.simpleweibobackend.common.RequireRole;
 import org.example.simpleweibobackend.common.Result;
+import org.example.simpleweibobackend.common.Role;
 import org.example.simpleweibobackend.user.service.FollowService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "关注管理")
 @RestController
 @RequestMapping("/api/follow")
+@RequireRole(Role.USER)
 @RequiredArgsConstructor
 public class FollowController {
 

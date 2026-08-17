@@ -64,7 +64,9 @@ public class JwtInterceptor implements HandlerInterceptor {
             requireRole = handlerMethod.getBeanType().getAnnotation(RequireRole.class);
         }
         if (requireRole == null) {
-            return true;
+            // 未显式声明 @RequireRole 的接口一律拒绝，避免隐式放行
+            writeForbidden(response);
+            return false;
         }
         Role currentRole = UserContext.getRole();
         for (Role required : requireRole.value()) {
@@ -72,9 +74,13 @@ public class JwtInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
+        writeForbidden(response);
+        return false;
+    }
+
+    private void writeForbidden(HttpServletResponse response) throws Exception {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(FORBIDDEN_JSON);
-        return false;
     }
 }

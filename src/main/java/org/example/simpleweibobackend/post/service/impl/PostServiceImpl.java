@@ -3,8 +3,8 @@ package org.example.simpleweibobackend.post.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import org.example.simpleweibobackend.post.feed.outbox.entity.Outbox;
-import org.example.simpleweibobackend.post.feed.outbox.mapper.OutboxMapper;
+import org.example.simpleweibobackend.post.feed.config.FeedMqConfig;
+import org.example.simpleweibobackend.post.feed.dto.PostCreatedEvent;
 import org.example.simpleweibobackend.post.dto.CreatePostRequest;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
@@ -17,6 +17,7 @@ import org.example.simpleweibobackend.post.vo.PostVO;
 import org.example.simpleweibobackend.user.entity.User;
 import org.example.simpleweibobackend.user.mapper.UserMapper;
 import org.example.simpleweibobackend.util.UserContext;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private final PostMapper postMapper;
-    private final OutboxMapper outboxMapper;
+    private final RabbitTemplate rabbitTemplate;
     private final UserMapper userMapper;
 
     @Override
@@ -42,11 +43,9 @@ public class PostServiceImpl implements PostService {
         post.setContent(request.getContent());
         postMapper.insert(post);
 
-        Outbox outbox = new Outbox();
-        outbox.setPostId(post.getId());
-        outbox.setUserId(userId);
-        outbox.setStatus("PENDING");
-        outboxMapper.insert(outbox);
+        rabbitTemplate.convertAndSend(
+                FeedMqConfig.EXCHANGE, FeedMqConfig.ROUTING_KEY,
+                new PostCreatedEvent(post.getId(), userId));
 
         return PostVO.from(post);
     }

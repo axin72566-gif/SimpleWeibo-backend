@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.simpleweibobackend.common.RequireRole;
 import org.example.simpleweibobackend.common.Result;
+import org.example.simpleweibobackend.common.Role;
 import org.example.simpleweibobackend.user.dto.LoginRequest;
 import org.example.simpleweibobackend.user.dto.RegisterRequest;
 import org.example.simpleweibobackend.user.service.UserService;
@@ -38,6 +40,9 @@ public class UserController {
         return Result.success(userService.login(request));
     }
 
+    // register/login 在 WebConfig 中排除拦截，无需角色校验
+
+    @RequireRole({Role.USER, Role.ADMIN})
     @Operation(summary = "退出登录")
     @PostMapping("/logout")
     public Result<Void> logout(@RequestHeader("Authorization") String authHeader) {
@@ -45,6 +50,7 @@ public class UserController {
         return Result.success();
     }
 
+    @RequireRole({Role.USER, Role.ADMIN})
     @Operation(summary = "获取当前登录用户信息")
     @GetMapping("/me")
     public Result<UserVO> me() {

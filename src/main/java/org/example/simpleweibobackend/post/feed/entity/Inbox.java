@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.post.feed.outbox.entity;
+package org.example.simpleweibobackend.post.feed.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -7,12 +7,12 @@ import org.example.simpleweibobackend.common.BaseEntity;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("outbox")
-public class Outbox extends BaseEntity {
-
-    private Long postId;
+@TableName("inbox")
+public class Inbox extends BaseEntity {
 
     private Long userId;
 
-    private String status;
+    private Long postId;
+
+    private Long postUserId;
 }

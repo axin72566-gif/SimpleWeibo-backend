@@ -1,6 +1,6 @@
-create table feed_item
+create table inbox
 (
-    id           bigint unsigned auto_increment comment 'Feed项ID'
+    id           bigint unsigned auto_increment comment '收件箱记录ID'
         primary key,
     user_id      bigint unsigned                     not null comment '收件人用户ID(粉丝)',
     post_id      bigint unsigned                     not null comment '帖子ID',
