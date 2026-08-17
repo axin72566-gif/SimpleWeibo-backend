@@ -6,6 +6,12 @@ spring:
     url: jdbc:mysql://localhost:3305/simple_weibo?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 123456
+    hikari:
+      pool-name: simpleweibo-dev
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 3000  # 获取连接超时3秒，与Redis max-wait一致，快速失败
+      max-lifetime: 1800000     # 30分钟，需低于MySQL wait_timeout（默认8小时）
 
   data:
     redis:

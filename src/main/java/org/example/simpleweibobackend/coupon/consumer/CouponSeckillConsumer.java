@@ -18,7 +18,8 @@ public class CouponSeckillConsumer {
     private final UserCouponMapper userCouponMapper;
     private final CouponMapper couponMapper;
 
-    @RabbitListener(queues = SeckillMqConfig.QUEUE)
+    // 并发消费降低积压：单线程约88 msg/s，10线程约880 msg/s
+    @RabbitListener(queues = SeckillMqConfig.QUEUE, concurrency = "10")
     public void onSeckillSuccess(CouponSeckillEvent event) {
         log.info("收到秒杀事件: couponId={}, userId={}", event.getCouponId(), event.getUserId());
 
