@@ -7,6 +7,7 @@ import org.example.simpleweibobackend.coupon.constant.CouponStatus;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.coupon.config.SeckillMqConfig;
 import org.example.simpleweibobackend.coupon.dto.CouponSeckillEvent;
+import org.example.simpleweibobackend.coupon.dto.SeckillCorrelationData;
 import org.example.simpleweibobackend.coupon.entity.Coupon;
 import org.example.simpleweibobackend.coupon.mapper.CouponMapper;
 import org.example.simpleweibobackend.coupon.service.UserCouponService;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     private final StringRedisTemplate redisTemplate;
     private final RabbitTemplate rabbitTemplate;
     private final DefaultRedisScript<Long> seckillScript;
+    private final DefaultRedisScript<Long> seckillRollbackScript;
 
     @Override
     public UserCouponVO seckill(Long couponId) {
@@ -67,14 +70,15 @@ public class UserCouponServiceImpl implements UserCouponService {
             throw new BizException(ErrorCode.CONFLICT, "您已领取过该优惠券");
         }
 
-        // 3. 发送 MQ 异步落库
+        // 3. 发送 MQ 异步落库（携带关联数据：broker nack/不可路由时由 SeckillMqConfirmConfig 原子回滚 Redis 预扣减）
+        CouponSeckillEvent event = new CouponSeckillEvent(couponId, userId);
         try {
-            rabbitTemplate.convertAndSend(SeckillMqConfig.EXCHANGE, SeckillMqConfig.ROUTING_KEY,
-                    new CouponSeckillEvent(couponId, userId));
+            rabbitTemplate.convertAndSend(SeckillMqConfig.EXCHANGE, SeckillMqConfig.ROUTING_KEY, event,
+                    new SeckillCorrelationData(UUID.randomUUID().toString(), event));
         } catch (Exception e) {
-            log.error("秒杀MQ发送失败，回滚Redis: couponId={}, userId={}", couponId, userId, e);
-            redisTemplate.opsForValue().increment(stockKey);
-            redisTemplate.opsForSet().remove(userKey, userId.toString());
+            log.error("秒杀MQ发送失败，原子回滚Redis: couponId={}, userId={}", couponId, userId, e);
+            // 单条 Lua 原子回滚，替代 increment+remove 两条命令，避免补偿二次失败造成用户永久无法领券
+            redisTemplate.execute(seckillRollbackScript, List.of(stockKey, userKey), userId.toString());
             throw new BizException(ErrorCode.INTERNAL_ERROR, "系统繁忙，请重试");
         }
 

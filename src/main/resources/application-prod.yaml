@@ -13,6 +13,24 @@ spring:
       connection-timeout: 3000  # 获取连接超时3秒，与Redis max-wait一致，快速失败
       max-lifetime: 1800000     # 30分钟，需低于MySQL wait_timeout（默认8小时）
 
+  rabbitmq:
+    host: ${MQ_HOST:localhost}
+    port: ${MQ_PORT:5672}
+    username: ${MQ_USERNAME:admin}
+    password: ${MQ_PASSWORD:}
+    publisher-confirm-type: correlated   # broker 确认回调，nack 时由 SeckillMqConfirmConfig 回滚 Redis
+    listener:
+      simple:
+        retry:
+          enabled: true            # 消费失败重试3次后进入DLQ，由 CouponSeckillDlqConsumer 补偿
+          initial-interval: 1000
+          multiplier: 2
+          max-interval: 10000
+          max-retries: 3
+        default-requeue-rejected: false
+        concurrency: 1
+        prefetch: 5
+
 # 生产环境关闭接口文档
 knife4j:
   production: true

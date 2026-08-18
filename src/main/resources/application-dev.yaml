@@ -30,6 +30,7 @@ spring:
     port: 5672
     username: admin
     password: 123456
+    publisher-confirm-type: correlated   # broker 确认回调，nack 时由 SeckillMqConfirmConfig 回滚 Redis
     listener:
       simple:
         retry:

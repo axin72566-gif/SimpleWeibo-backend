@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.coupon.config.SeckillMqConfig;
 import org.example.simpleweibobackend.coupon.dto.CouponSeckillEvent;
-import org.example.simpleweibobackend.coupon.entity.UserCoupon;
-import org.example.simpleweibobackend.coupon.mapper.CouponMapper;
-import org.example.simpleweibobackend.coupon.mapper.UserCouponMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -15,22 +12,15 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CouponSeckillConsumer {
 
-    private final UserCouponMapper userCouponMapper;
-    private final CouponMapper couponMapper;
+    private final SeckillOrderPersister orderPersister;
 
     // 并发消费降低积压：单线程约88 msg/s，10线程约880 msg/s
     @RabbitListener(queues = SeckillMqConfig.QUEUE, concurrency = "10")
     public void onSeckillSuccess(CouponSeckillEvent event) {
         log.info("收到秒杀事件: couponId={}, userId={}", event.getCouponId(), event.getUserId());
 
-        UserCoupon userCoupon = new UserCoupon();
-        userCoupon.setUserId(event.getUserId());
-        userCoupon.setCouponId(event.getCouponId());
-        userCoupon.setStatus("UNUSED");
-        int inserted = userCouponMapper.insertIgnore(userCoupon);
-
-        if (inserted > 0) {
-            couponMapper.decrementStock(event.getCouponId());
+        // 事务化落库：异常时事务回滚并上抛，触发 MQ 重试，避免 insert 成功但 stock 未扣的漂移
+        if (orderPersister.persist(event.getCouponId(), event.getUserId())) {
             log.info("秒杀落库成功: couponId={}, userId={}", event.getCouponId(), event.getUserId());
         } else {
             log.warn("秒杀落库跳过（重复领取）: couponId={}, userId={}", event.getCouponId(), event.getUserId());
