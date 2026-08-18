@@ -51,8 +51,8 @@ class FeedFanoutBenchmarkTest {
         // 确保依赖的表和索引存在
         ensureSchema();
 
-        log.info("=== Feed Fanout 基准测试 (MQ异步模式) ===");
-        log.info("环境: HikariCP连接池=10(默认), Tomcat线程=200(默认), MySQL本地单实例, RabbitMQ异步消费");
+        log.info("=== Feed Fanout 基准测试 (线程池异步模式) ===");
+        log.info("环境: HikariCP连接池=50, Tomcat线程=200(默认), MySQL本地单实例, 本地线程池异步fanout(4核心/16最大/队列1000)");
         log.info("");
 
         int[][] configs = {
