@@ -30,7 +30,7 @@ spring:
     port: 5672
     username: admin
     password: 123456
-    publisher-confirm-type: correlated   # broker 确认回调，nack 时由 SeckillMqConfirmConfig 回滚 Redis
+    publisher-confirm-type: correlated
     listener:
       simple:
         retry:
@@ -40,7 +40,7 @@ spring:
           max-interval: 10000
           max-retries: 3
         default-requeue-rejected: false
-        concurrency: 1
+        concurrency: 10
         prefetch: 5
 
 mybatis-plus:

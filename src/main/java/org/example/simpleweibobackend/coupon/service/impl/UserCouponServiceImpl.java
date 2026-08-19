@@ -70,14 +70,14 @@ public class UserCouponServiceImpl implements UserCouponService {
             throw new BizException(ErrorCode.CONFLICT, "您已领取过该优惠券");
         }
 
-        // 3. 发送 MQ 异步落库（携带关联数据：broker nack/不可路由时由 SeckillMqConfirmConfig 原子回滚 Redis 预扣减）
+        // 3. 发送 MQ 异步落库
         CouponSeckillEvent event = new CouponSeckillEvent(couponId, userId);
         try {
             rabbitTemplate.convertAndSend(SeckillMqConfig.EXCHANGE, SeckillMqConfig.ROUTING_KEY, event,
                     new SeckillCorrelationData(UUID.randomUUID().toString(), event));
         } catch (Exception e) {
             log.error("秒杀MQ发送失败，原子回滚Redis: couponId={}, userId={}", couponId, userId, e);
-            // 单条 Lua 原子回滚，替代 increment+remove 两条命令，避免补偿二次失败造成用户永久无法领券
+
             redisTemplate.execute(seckillRollbackScript, List.of(stockKey, userKey), userId.toString());
             throw new BizException(ErrorCode.INTERNAL_ERROR, "系统繁忙，请重试");
         }
