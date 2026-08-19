@@ -7,7 +7,6 @@ import org.example.simpleweibobackend.coupon.constant.CouponStatus;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.coupon.config.SeckillMqConfig;
 import org.example.simpleweibobackend.coupon.dto.CouponSeckillEvent;
-import org.example.simpleweibobackend.coupon.dto.SeckillCorrelationData;
 import org.example.simpleweibobackend.coupon.entity.Coupon;
 import org.example.simpleweibobackend.coupon.mapper.CouponMapper;
 import org.example.simpleweibobackend.coupon.service.UserCouponService;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +31,6 @@ public class UserCouponServiceImpl implements UserCouponService {
     private final StringRedisTemplate redisTemplate;
     private final RabbitTemplate rabbitTemplate;
     private final DefaultRedisScript<Long> seckillScript;
-    private final DefaultRedisScript<Long> seckillRollbackScript;
 
     @Override
     public UserCouponVO seckill(Long couponId) {
@@ -72,15 +69,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
         // 3. 发送 MQ 异步落库
         CouponSeckillEvent event = new CouponSeckillEvent(couponId, userId);
-        try {
-            rabbitTemplate.convertAndSend(SeckillMqConfig.EXCHANGE, SeckillMqConfig.ROUTING_KEY, event,
-                    new SeckillCorrelationData(UUID.randomUUID().toString(), event));
-        } catch (Exception e) {
-            log.error("秒杀MQ发送失败，原子回滚Redis: couponId={}, userId={}", couponId, userId, e);
-
-            redisTemplate.execute(seckillRollbackScript, List.of(stockKey, userKey), userId.toString());
-            throw new BizException(ErrorCode.INTERNAL_ERROR, "系统繁忙，请重试");
-        }
+        rabbitTemplate.convertAndSend(SeckillMqConfig.EXCHANGE, SeckillMqConfig.ROUTING_KEY, event);
 
         return UserCouponVO.of(couponId, userId, coupon.getName(), coupon.getDiscountRate());
     }
