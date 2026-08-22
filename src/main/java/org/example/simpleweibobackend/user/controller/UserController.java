@@ -29,8 +29,6 @@ public class UserController {
         return Result.success(userService.register(request));
     }
 
-    // 无登录鉴权，用户身份通过 X-User-Id 请求头传入（见 UserIdInterceptor）
-
     @Operation(summary = "获取当前用户信息")
     @GetMapping("/me")
     public Result<UserVO> me() {
