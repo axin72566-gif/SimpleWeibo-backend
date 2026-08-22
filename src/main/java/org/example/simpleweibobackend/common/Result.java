@@ -29,10 +29,6 @@ public class Result<T> {
         return new Result<>(errorCode.getCode(), errorCode.getMessage(), null);
     }
 
-    public static <T> Result<T> fail(ErrorCode errorCode, String message) {
-        return new Result<>(errorCode.getCode(), message, null);
-    }
-
     public static <T> Result<T> fail(Integer code, String message) {
         return new Result<>(code, message, null);
     }

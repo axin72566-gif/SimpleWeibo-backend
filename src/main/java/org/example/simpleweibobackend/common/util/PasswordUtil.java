@@ -25,8 +25,4 @@ public class PasswordUtil {
             throw new IllegalStateException("SHA-256 算法不可用", e);
         }
     }
-
-    public static boolean matches(String rawPassword, String hashedPassword) {
-        return hash(rawPassword).equals(hashedPassword);
-    }
 }
