@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.exception;
+package org.example.simpleweibobackend.common.exception;
 
 import lombok.Getter;
 import org.example.simpleweibobackend.common.ErrorCode;

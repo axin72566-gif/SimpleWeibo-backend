@@ -10,7 +10,7 @@ import org.example.simpleweibobackend.post.feed.service.FeedService;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
 import org.example.simpleweibobackend.post.vo.PostVO;
-import org.example.simpleweibobackend.util.UserContext;
+import org.example.simpleweibobackend.common.util.UserContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

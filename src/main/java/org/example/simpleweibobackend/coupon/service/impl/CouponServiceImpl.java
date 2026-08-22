@@ -12,7 +12,7 @@ import org.example.simpleweibobackend.coupon.entity.Coupon;
 import org.example.simpleweibobackend.coupon.mapper.CouponMapper;
 import org.example.simpleweibobackend.coupon.service.CouponService;
 import org.example.simpleweibobackend.coupon.vo.CouponVO;
-import org.example.simpleweibobackend.exception.BizException;
+import org.example.simpleweibobackend.common.exception.BizException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 

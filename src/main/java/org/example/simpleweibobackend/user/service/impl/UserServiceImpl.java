@@ -3,15 +3,15 @@ package org.example.simpleweibobackend.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
-import org.example.simpleweibobackend.exception.BizException;
+import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.user.dto.RegisterRequest;
 import org.example.simpleweibobackend.user.entity.User;
 import org.example.simpleweibobackend.user.mapper.UserMapper;
 import org.example.simpleweibobackend.user.service.UserService;
 import org.example.simpleweibobackend.user.vo.RegisterVO;
 import org.example.simpleweibobackend.user.vo.UserVO;
-import org.example.simpleweibobackend.util.PasswordUtil;
-import org.example.simpleweibobackend.util.UserContext;
+import org.example.simpleweibobackend.common.util.PasswordUtil;
+import org.example.simpleweibobackend.common.util.UserContext;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

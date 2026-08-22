@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.exception;
+package org.example.simpleweibobackend.common.exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

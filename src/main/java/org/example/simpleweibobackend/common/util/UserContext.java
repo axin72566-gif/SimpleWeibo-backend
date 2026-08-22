@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.util;
+package org.example.simpleweibobackend.common.util;
 
 public final class UserContext {
 
