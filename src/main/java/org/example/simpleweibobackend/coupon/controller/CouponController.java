@@ -6,9 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.PageVO;
-import org.example.simpleweibobackend.common.RequireRole;
 import org.example.simpleweibobackend.common.Result;
-import org.example.simpleweibobackend.common.Role;
 import org.example.simpleweibobackend.coupon.dto.CreateCouponRequest;
 import org.example.simpleweibobackend.coupon.service.CouponService;
 import org.example.simpleweibobackend.coupon.vo.CouponVO;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequireRole(Role.ADMIN)
 @Tag(name = "优惠券管理")
 @RestController
 @RequestMapping("/api/coupons")

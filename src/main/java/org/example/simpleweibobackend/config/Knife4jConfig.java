@@ -23,12 +23,10 @@ public class Knife4jConfig {
                         .contact(new Contact().name("SimpleWeibo"))
                         .license(new License().name("Apache 2.0")))
                 .components(new Components()
-                        .addSecuritySchemes("Bearer", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
+                        .addSecuritySchemes("X-User-Id", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
                                 .in(SecurityScheme.In.HEADER)
-                                .name("Authorization")))
-                .addSecurityItem(new SecurityRequirement().addList("Bearer"));
+                                .name("X-User-Id")))
+                .addSecurityItem(new SecurityRequirement().addList("X-User-Id"));
     }
 }

@@ -6,9 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.PageVO;
-import org.example.simpleweibobackend.common.RequireRole;
 import org.example.simpleweibobackend.common.Result;
-import org.example.simpleweibobackend.common.Role;
 import org.example.simpleweibobackend.post.dto.CreatePostRequest;
 import org.example.simpleweibobackend.post.service.PostService;
 import org.example.simpleweibobackend.post.vo.PostDetailVO;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "帖子管理")
 @RestController
 @RequestMapping("/api/posts")
-@RequireRole(Role.USER)
 @RequiredArgsConstructor
 public class PostController {
 

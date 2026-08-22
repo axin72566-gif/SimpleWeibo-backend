@@ -1,7 +1,7 @@
 package org.example.simpleweibobackend.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.simpleweibobackend.intercepter.JwtInterceptor;
+import org.example.simpleweibobackend.intercepter.UserIdInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final JwtInterceptor jwtInterceptor;
+    private final UserIdInterceptor userIdInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -25,8 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/users/register", "/api/users/login");
+        registry.addInterceptor(userIdInterceptor)
+                .addPathPatterns("/api/**");
     }
 }
