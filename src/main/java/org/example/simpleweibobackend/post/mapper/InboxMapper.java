@@ -1,10 +1,10 @@
-package org.example.simpleweibobackend.post.feed.mapper;
+package org.example.simpleweibobackend.post.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.example.simpleweibobackend.post.feed.entity.Inbox;
+import org.example.simpleweibobackend.post.entity.Inbox;
 
 import java.util.List;
 
