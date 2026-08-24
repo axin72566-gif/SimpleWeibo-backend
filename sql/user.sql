@@ -11,3 +11,5 @@ create table user
 )
     comment '用户表' collate = utf8mb4_unicode_ci;
 
+ALTER TABLE user ADD UNIQUE KEY uk_username (username);
+
