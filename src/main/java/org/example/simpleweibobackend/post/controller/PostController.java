@@ -1,8 +1,5 @@
 package org.example.simpleweibobackend.post.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.Result;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "帖子管理")
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
@@ -25,15 +21,13 @@ public class PostController {
 
     private final PostService postService;
 
-    @Operation(summary = "发布帖子")
     @PostMapping
     public Result<PostVO> createPost(@Valid @RequestBody CreatePostRequest request) {
         return Result.success(postService.createPost(request));
     }
 
-    @Operation(summary = "查看帖子详情")
     @GetMapping("/{id}")
-    public Result<PostDetailVO> getPostDetail(@Parameter(description = "帖子ID") @PathVariable Long id) {
+    public Result<PostDetailVO> getPostDetail(@PathVariable Long id) {
         return Result.success(postService.getPostDetail(id));
     }
 }

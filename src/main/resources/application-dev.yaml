@@ -25,16 +25,6 @@ spring:
           min-idle: 5
           max-wait: 3000ms
 
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: admin
-    password: 123456
-    listener:
-      simple:
-        concurrency: 10
-        prefetch: 5
-
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
