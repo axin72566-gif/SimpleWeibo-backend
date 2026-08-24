@@ -12,9 +12,9 @@ import java.util.List;
 public interface InboxMapper extends BaseMapper<Inbox> {
 
     @Insert("<script>" +
-            "INSERT IGNORE INTO inbox (user_id, post_id, post_user_id) VALUES " +
+            "INSERT IGNORE INTO inbox (receiver_id, post_id, author_id) VALUES " +
             "<foreach collection='items' item='item' separator=','>" +
-            "(#{item.userId}, #{item.postId}, #{item.postUserId})" +
+            "(#{item.receiverId}, #{item.postId}, #{item.authorId})" +
             "</foreach>" +
             "</script>")
     int batchInsert(@Param("items") List<Inbox> items);

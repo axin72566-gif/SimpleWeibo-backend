@@ -43,12 +43,12 @@ public class PostServiceImpl implements PostService {
         postMapper.insert(post);
 
         Long postId = post.getId();
-        List<Long> receiverIds = new ArrayList<>(followMapper.selectFollowerIds(userId));
+        List<Long> receiverIds = new ArrayList<>(followMapper.selectFanIds(userId));
         List<Inbox> items = receiverIds.stream().map(receiverId -> {
             Inbox item = new Inbox();
-            item.setUserId(receiverId);
+            item.setReceiverId(receiverId);
             item.setPostId(postId);
-            item.setPostUserId(userId);
+            item.setAuthorId(userId);
             return item;
         }).toList();
         inboxMapper.batchInsert(items);

@@ -10,9 +10,9 @@ import org.example.simpleweibobackend.common.BaseEntity;
 @TableName("inbox")
 public class Inbox extends BaseEntity {
 
-    private Long userId;
+    private Long receiverId;
 
     private Long postId;
 
-    private Long postUserId;
+    private Long authorId;
 }

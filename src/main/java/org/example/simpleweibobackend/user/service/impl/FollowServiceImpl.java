@@ -21,30 +21,30 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public void follow(Long followingId) {
-        Long followerId = UserContext.getUserId();
-        if (followerId.equals(followingId)) {
+        Long fanId = UserContext.getUserId();
+        if (fanId.equals(followingId)) {
             throw new BizException(ErrorCode.BAD_REQUEST, "不能关注自己");
         }
         if (!userMapper.exists(new QueryWrapper<User>().eq("id", followingId))) {
             throw new BizException(ErrorCode.NOT_FOUND, "用户不存在");
         }
         boolean exists = followMapper.exists(new QueryWrapper<Follow>()
-                .eq("follower_id", followerId)
+                .eq("fan_id", fanId)
                 .eq("following_id", followingId));
         if (exists) {
             throw new BizException(ErrorCode.CONFLICT, "已关注该用户");
         }
         Follow follow = new Follow();
-        follow.setFollowerId(followerId);
+        follow.setFanId(fanId);
         follow.setFollowingId(followingId);
         followMapper.insert(follow);
     }
 
     @Override
     public void unfollow(Long followingId) {
-        Long followerId = UserContext.getUserId();
+        Long fanId = UserContext.getUserId();
         int deleted = followMapper.delete(new QueryWrapper<Follow>()
-                .eq("follower_id", followerId)
+                .eq("fan_id", fanId)
                 .eq("following_id", followingId));
         if (deleted == 0) {
             throw new BizException(ErrorCode.NOT_FOUND, "未关注该用户");

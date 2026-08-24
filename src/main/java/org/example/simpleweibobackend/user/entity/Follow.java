@@ -10,7 +10,7 @@ import org.example.simpleweibobackend.common.BaseEntity;
 @TableName("follow")
 public class Follow extends BaseEntity {
 
-    private Long followerId;
+    private Long fanId;
 
     private Long followingId;
 }

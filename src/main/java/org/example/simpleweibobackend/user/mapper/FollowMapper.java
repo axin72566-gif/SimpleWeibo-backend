@@ -11,6 +11,6 @@ import java.util.List;
 @Mapper
 public interface FollowMapper extends BaseMapper<Follow> {
 
-    @Select("SELECT follower_id FROM follow WHERE following_id = #{userId}")
-    List<Long> selectFollowerIds(@Param("userId") Long userId);
+    @Select("SELECT fan_id FROM follow WHERE following_id = #{userId}")
+    List<Long> selectFanIds(@Param("userId") Long userId);
 }

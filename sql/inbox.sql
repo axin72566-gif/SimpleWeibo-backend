@@ -2,12 +2,10 @@ create table inbox
 (
     id           bigint unsigned auto_increment comment '收件箱记录ID'
         primary key,
-    user_id      bigint unsigned                     not null comment '收件人用户ID(粉丝)',
+    receiver_id      bigint unsigned                     not null comment '收件人用户ID(粉丝)',
     post_id      bigint unsigned                     not null comment '帖子ID',
-    post_user_id bigint unsigned                     not null comment '发帖人用户ID',
+    author_id bigint unsigned                     not null comment '发帖人用户ID',
     create_time  datetime default CURRENT_TIMESTAMP null comment '创建时间',
-    update_time  datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
-    index idx_user_create (user_id, create_time desc),
-    constraint uk_user_post unique (user_id, post_id)
+    update_time  datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
 )
     comment 'Feed收件箱表' collate = utf8mb4_unicode_ci;
