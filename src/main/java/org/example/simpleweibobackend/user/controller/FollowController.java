@@ -3,7 +3,6 @@ package org.example.simpleweibobackend.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.Result;
 import org.example.simpleweibobackend.user.service.FollowService;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +18,6 @@ public class FollowController {
     @PostMapping("/{userId}")
     public Result<Void> follow(@PathVariable Long userId) {
         followService.follow(userId);
-        return Result.success();
-    }
-
-    @DeleteMapping("/{userId}")
-    public Result<Void> unfollow(@PathVariable Long userId) {
-        followService.unfollow(userId);
         return Result.success();
     }
 }

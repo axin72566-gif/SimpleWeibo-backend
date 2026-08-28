@@ -39,15 +39,4 @@ public class FollowServiceImpl implements FollowService {
         follow.setFollowingId(followingId);
         followMapper.insert(follow);
     }
-
-    @Override
-    public void unfollow(Long followingId) {
-        Long fanId = UserContext.getUserId();
-        int deleted = followMapper.delete(new QueryWrapper<Follow>()
-                .eq("fan_id", fanId)
-                .eq("following_id", followingId));
-        if (deleted == 0) {
-            throw new BizException(ErrorCode.NOT_FOUND, "未关注该用户");
-        }
-    }
 }
