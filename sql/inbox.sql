@@ -11,3 +11,5 @@ create table inbox
     comment 'Feed收件箱表' collate = utf8mb4_unicode_ci;
 
 ALTER TABLE inbox ADD UNIQUE KEY uk_receiver_post (receiver_id, post_id);
+
+ALTER TABLE inbox ADD INDEX idx_receiver_id_id (receiver_id, id);
