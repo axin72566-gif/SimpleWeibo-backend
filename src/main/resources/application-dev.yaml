@@ -10,8 +10,8 @@ spring:
       pool-name: simpleweibo-dev
       maximum-pool-size: 50
       minimum-idle: 10
-      connection-timeout: 3000  # 获取连接超时3秒，与Redis max-wait一致，快速失败
-      max-lifetime: 1800000     # 30分钟，需低于MySQL wait_timeout（默认8小时）
+      connection-timeout: 3000
+      max-lifetime: 1800000
 
   data:
     redis:
