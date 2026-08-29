@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.vote.entity.VoteActivity;
 import org.example.simpleweibobackend.vote.mapper.VoteActivityMapper;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class VoteActivityBloomFilter implements ApplicationRunner {
     private final VoteActivityMapper voteActivityMapper;
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(@NonNull ApplicationArguments args) {
         // 过滤器在JVM内存里，每次启动都需要用库中已有ID重新灌入
         voteActivityMapper.selectObjs(new LambdaQueryWrapper<VoteActivity>().select(VoteActivity::getId))
                 .forEach(id -> add(((Number) id).longValue()));
@@ -59,7 +60,7 @@ public class VoteActivityBloomFilter implements ApplicationRunner {
         long h2 = mix(id, SEED_2);
         int[] indexes = new int[HASH_COUNT];
         for (int i = 0; i < HASH_COUNT; i++) {
-            indexes[i] = (int) Math.floorMod(h1 + i * h2, BITS);
+            indexes[i] = Math.floorMod(h1 + i * h2, BITS);
         }
         return indexes;
     }
