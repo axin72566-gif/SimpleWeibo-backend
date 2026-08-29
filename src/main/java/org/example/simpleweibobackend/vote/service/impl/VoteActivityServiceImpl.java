@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,10 @@ public class VoteActivityServiceImpl implements VoteActivityService {
     private final PostMapper postMapper;
     private final VoteActivityCache voteActivityCache;
     private final VoteActivityBloomFilter voteActivityBloomFilter;
+    /**
+     * 按活动ID粒度的回源锁，防止热点活动缓存失效瞬间的并发击穿
+     */
+    private final ConcurrentHashMap<Long, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     @Override
     public VoteActivityVO createVoteActivity(CreateVoteActivityRequest request) {
@@ -65,14 +71,23 @@ public class VoteActivityServiceImpl implements VoteActivityService {
             return cached;
         }
 
-        VoteActivity voteActivity = voteActivityMapper.selectById(id);
-        if (voteActivity == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
+        ReentrantLock lock = locks.computeIfAbsent(id, k -> new ReentrantLock());
+        lock.lock();
+        try {
+            // 双重检查：等锁期间缓存可能已被其他请求回填
+            cached = voteActivityCache.get(id);
+            if (cached != null) {
+                return cached;
+            }
+            VoteActivity voteActivity = voteActivityMapper.selectById(id);
+            if (voteActivity == null) {
+                throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
+            }
+            VoteActivityVO vo = VoteActivityVO.from(voteActivity);
+            voteActivityCache.put(vo);
+            return vo;
+        } finally {
+            lock.unlock();
         }
-
-        VoteActivityVO vo = VoteActivityVO.from(voteActivity);
-        voteActivityCache.put(vo);
-
-        return vo;
     }
 }

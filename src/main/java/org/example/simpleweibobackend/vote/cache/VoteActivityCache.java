@@ -8,13 +8,15 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 @RequiredArgsConstructor
 public class VoteActivityCache {
 
     private static final String KEY_PREFIX = "vote:activity:";
-    private static final Duration TTL = Duration.ofHours(1);
+    private static final Duration BASE_TTL = Duration.ofMinutes(60);
+    private static final Duration TTL_JITTER = Duration.ofMinutes(10);
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -32,6 +34,9 @@ public class VoteActivityCache {
     }
 
     public void put(VoteActivityVO vo) {
-        stringRedisTemplate.opsForValue().set(KEY_PREFIX + vo.getId(), JSONUtil.toJsonStr(vo), TTL);
+        // TTL带±10分钟随机抖动，避免大量活动同时过期造成缓存雪崩
+        long jitter = ThreadLocalRandom.current().nextLong(-TTL_JITTER.getSeconds(), TTL_JITTER.getSeconds());
+        stringRedisTemplate.opsForValue().set(KEY_PREFIX + vo.getId(), JSONUtil.toJsonStr(vo),
+                BASE_TTL.plusSeconds(jitter));
     }
 }
