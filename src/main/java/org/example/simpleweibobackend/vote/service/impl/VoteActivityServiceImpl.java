@@ -8,6 +8,7 @@ import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
+import org.example.simpleweibobackend.vote.cache.VoteActivityBloomFilter;
 import org.example.simpleweibobackend.vote.cache.VoteActivityCache;
 import org.example.simpleweibobackend.vote.dto.CreateVoteActivityRequest;
 import org.example.simpleweibobackend.vote.entity.VoteActivity;
@@ -29,6 +30,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
     private final VoteActivityMapper voteActivityMapper;
     private final PostMapper postMapper;
     private final VoteActivityCache voteActivityCache;
+    private final VoteActivityBloomFilter voteActivityBloomFilter;
 
     @Override
     public VoteActivityVO createVoteActivity(CreateVoteActivityRequest request) {
@@ -45,6 +47,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
         voteActivity.setPostIds(JSONUtil.toJsonStr(postIds));
         voteActivityMapper.insert(voteActivity);
 
+        voteActivityBloomFilter.add(voteActivity.getId());
         VoteActivityVO vo = VoteActivityVO.from(voteActivity);
         voteActivityCache.put(vo);
 
@@ -53,6 +56,10 @@ public class VoteActivityServiceImpl implements VoteActivityService {
 
     @Override
     public VoteActivityVO getVoteActivity(Long id) {
+        if (!voteActivityBloomFilter.mightContain(id)) {
+            throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
+        }
+
         VoteActivityVO cached = voteActivityCache.get(id);
         if (cached != null) {
             return cached;
