@@ -8,8 +8,6 @@ import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
-import org.example.simpleweibobackend.vote.cache.VoteActivityBloomFilter;
-import org.example.simpleweibobackend.vote.cache.VoteActivityCache;
 import org.example.simpleweibobackend.vote.dto.CreateVoteActivityRequest;
 import org.example.simpleweibobackend.vote.entity.VoteActivity;
 import org.example.simpleweibobackend.vote.mapper.VoteActivityMapper;
@@ -19,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +27,6 @@ public class VoteActivityServiceImpl implements VoteActivityService {
 
     private final VoteActivityMapper voteActivityMapper;
     private final PostMapper postMapper;
-    private final VoteActivityCache voteActivityCache;
-    private final VoteActivityBloomFilter voteActivityBloomFilter;
-    /**
-     * 按活动ID粒度的回源锁，防止热点活动缓存失效瞬间的并发击穿
-     */
-    private final ConcurrentHashMap<Long, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     @Override
     public VoteActivityVO createVoteActivity(CreateVoteActivityRequest request) {
@@ -53,41 +43,16 @@ public class VoteActivityServiceImpl implements VoteActivityService {
         voteActivity.setPostIds(JSONUtil.toJsonStr(postIds));
         voteActivityMapper.insert(voteActivity);
 
-        voteActivityBloomFilter.add(voteActivity.getId());
-        VoteActivityVO vo = VoteActivityVO.from(voteActivity);
-        voteActivityCache.put(vo);
-
-        return vo;
+        return VoteActivityVO.from(voteActivity);
     }
 
     @Override
     public VoteActivityVO getVoteActivity(Long id) {
-        if (!voteActivityBloomFilter.mightContain(id)) {
+        VoteActivity voteActivity = voteActivityMapper.selectById(id);
+        if (voteActivity == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
         }
 
-        VoteActivityVO cached = voteActivityCache.get(id);
-        if (cached != null) {
-            return cached;
-        }
-
-        ReentrantLock lock = locks.computeIfAbsent(id, k -> new ReentrantLock());
-        lock.lock();
-        try {
-            // 双重检查：等锁期间缓存可能已被其他请求回填
-            cached = voteActivityCache.get(id);
-            if (cached != null) {
-                return cached;
-            }
-            VoteActivity voteActivity = voteActivityMapper.selectById(id);
-            if (voteActivity == null) {
-                throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
-            }
-            VoteActivityVO vo = VoteActivityVO.from(voteActivity);
-            voteActivityCache.put(vo);
-            return vo;
-        } finally {
-            lock.unlock();
-        }
+        return VoteActivityVO.from(voteActivity);
     }
 }
