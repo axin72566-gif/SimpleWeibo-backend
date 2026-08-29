@@ -8,6 +8,7 @@ import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
+import org.example.simpleweibobackend.vote.cache.VoteActivityCache;
 import org.example.simpleweibobackend.vote.dto.CreateVoteActivityRequest;
 import org.example.simpleweibobackend.vote.entity.VoteActivity;
 import org.example.simpleweibobackend.vote.mapper.VoteActivityMapper;
@@ -27,6 +28,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
 
     private final VoteActivityMapper voteActivityMapper;
     private final PostMapper postMapper;
+    private final VoteActivityCache voteActivityCache;
 
     @Override
     public VoteActivityVO createVoteActivity(CreateVoteActivityRequest request) {
@@ -38,18 +40,32 @@ public class VoteActivityServiceImpl implements VoteActivityService {
         if (count != POST_COUNT) {
             throw new BizException(ErrorCode.NOT_FOUND, "存在不存在的帖子");
         }
+
         VoteActivity voteActivity = new VoteActivity();
         voteActivity.setPostIds(JSONUtil.toJsonStr(postIds));
         voteActivityMapper.insert(voteActivity);
-        return VoteActivityVO.from(voteActivity);
+
+        VoteActivityVO vo = VoteActivityVO.from(voteActivity);
+        voteActivityCache.put(vo);
+
+        return vo;
     }
 
     @Override
     public VoteActivityVO getVoteActivity(Long id) {
+        VoteActivityVO cached = voteActivityCache.get(id);
+        if (cached != null) {
+            return cached;
+        }
+
         VoteActivity voteActivity = voteActivityMapper.selectById(id);
         if (voteActivity == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
         }
-        return VoteActivityVO.from(voteActivity);
+
+        VoteActivityVO vo = VoteActivityVO.from(voteActivity);
+        voteActivityCache.put(vo);
+
+        return vo;
     }
 }
