@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.vote.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
             throw new BizException(ErrorCode.NOT_FOUND, "存在不存在的帖子");
         }
         VoteActivity voteActivity = new VoteActivity();
-        voteActivity.setPostIds(postIds);
+        voteActivity.setPostIds(JSONUtil.toJsonStr(postIds));
         voteActivityMapper.insert(voteActivity);
         return VoteActivityVO.from(voteActivity);
     }
