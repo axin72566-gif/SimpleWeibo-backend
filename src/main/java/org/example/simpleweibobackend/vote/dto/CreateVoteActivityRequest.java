@@ -11,5 +11,5 @@ public class CreateVoteActivityRequest {
 
     @NotNull(message = "帖子ID列表不能为空")
     @Size(min = 10, max = 10, message = "投票活动必须包含10个帖子")
-    private List<Long> postIds;
+    private List<@NotNull(message = "帖子ID不能为空") Long> postIds;
 }

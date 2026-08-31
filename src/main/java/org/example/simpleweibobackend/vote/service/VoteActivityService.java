@@ -6,6 +6,4 @@ import org.example.simpleweibobackend.vote.vo.VoteActivityVO;
 public interface VoteActivityService {
 
     VoteActivityVO createVoteActivity(CreateVoteActivityRequest request);
-
-    VoteActivityVO getVoteActivity(Long id);
 }

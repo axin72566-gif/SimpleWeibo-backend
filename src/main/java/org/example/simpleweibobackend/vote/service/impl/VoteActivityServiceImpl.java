@@ -16,7 +16,6 @@ import org.example.simpleweibobackend.vote.vo.VoteActivityVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +30,8 @@ public class VoteActivityServiceImpl implements VoteActivityService {
     @Override
     public VoteActivityVO createVoteActivity(CreateVoteActivityRequest request) {
         List<Long> postIds = request.getPostIds();
-        if (postIds == null || postIds.stream().filter(Objects::nonNull).distinct().count() != POST_COUNT) {
-            throw new BizException(ErrorCode.BAD_REQUEST, "投票活动必须包含10个不重复的帖子");
+        if (postIds.stream().distinct().count() != POST_COUNT) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "投票活动不能包含重复帖子");
         }
         long count = postMapper.selectCount(new LambdaQueryWrapper<Post>().in(Post::getId, postIds));
         if (count != POST_COUNT) {
@@ -46,13 +45,4 @@ public class VoteActivityServiceImpl implements VoteActivityService {
         return VoteActivityVO.from(voteActivity);
     }
 
-    @Override
-    public VoteActivityVO getVoteActivity(Long id) {
-        VoteActivity voteActivity = voteActivityMapper.selectById(id);
-        if (voteActivity == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
-        }
-
-        return VoteActivityVO.from(voteActivity);
-    }
 }
