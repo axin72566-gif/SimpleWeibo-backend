@@ -34,12 +34,13 @@ public class VoteServiceImpl implements VoteService {
         record.setUserId(userId);
         record.setPostId(request.getPostId());
         try {
+            // 保存投票记录
             voteRecordMapper.insert(record);
         } catch (DuplicateKeyException e) {
             throw new BizException(ErrorCode.CONFLICT, "已投过票，不能重复投票");
         }
 
-        // 数据库端自增累加，不能查出来加一再写回，否则并发下丢票
+        // 更新投票统计
         int updatedRows = voteStatMapper.update(null, new LambdaUpdateWrapper<VoteStat>()
                 .eq(VoteStat::getActivityId, request.getActivityId())
                 .eq(VoteStat::getPostId, request.getPostId())

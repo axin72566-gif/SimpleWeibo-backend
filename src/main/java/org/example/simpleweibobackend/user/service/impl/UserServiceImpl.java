@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RegisterVO register(RegisterRequest request) {
+        // 校验用户名是否存在
         boolean exists = userMapper.exists(new QueryWrapper<User>()
                 .eq("username", request.getUsername()));
         if (exists) {
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(request.getUsername());
         user.setPassword(PasswordUtil.hash(request.getPassword()));
         user.setNickname(nickname);
+        // 保存用户
         userMapper.insert(user);
 
         return RegisterVO.from(user);
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVO getCurrentUser() {
         Long userId = UserContext.getUserId();
+        // 查询用户
         User user = userMapper.selectById(userId);
         if (user == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "用户不存在");

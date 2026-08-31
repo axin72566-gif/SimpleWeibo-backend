@@ -10,9 +10,18 @@ import org.example.simpleweibobackend.common.BaseEntity;
 @TableName("post")
 public class Post extends BaseEntity {
 
+    /**
+     * 用户ID
+     */
     private Long userId;
 
+    /**
+     * 标题
+     */
     private String title;
 
+    /**
+     * 内容
+     */
     private String content;
 }

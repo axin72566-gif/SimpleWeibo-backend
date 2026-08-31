@@ -8,12 +8,24 @@ import org.example.simpleweibobackend.user.entity.User;
 @AllArgsConstructor
 public class UserVO {
 
+    /**
+     * 用户ID
+     */
     private Long id;
 
+    /**
+     * 用户名
+     */
     private String username;
 
+    /**
+     * 昵称
+     */
     private String nickname;
 
+    /**
+     * 个人简介
+     */
     private String bio;
 
     public static UserVO from(User user) {

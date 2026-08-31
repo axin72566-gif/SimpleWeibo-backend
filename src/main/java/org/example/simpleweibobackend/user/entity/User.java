@@ -10,11 +10,23 @@ import org.example.simpleweibobackend.common.BaseEntity;
 @TableName("user")
 public class User extends BaseEntity {
 
+    /**
+     * 用户名
+     */
     private String username;
 
+    /**
+     * 密码
+     */
     private String password;
 
+    /**
+     * 昵称
+     */
     private String nickname;
 
+    /**
+     * 个人简介
+     */
     private String bio;
 }

@@ -38,6 +38,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
         if (postIds.stream().distinct().count() != POST_COUNT) {
             throw new BizException(ErrorCode.BAD_REQUEST, "投票活动不能包含重复帖子");
         }
+        // 栣查帖子是否存在
         long count = postMapper.selectCount(new LambdaQueryWrapper<Post>().in(Post::getId, postIds));
         if (count != POST_COUNT) {
             throw new BizException(ErrorCode.NOT_FOUND, "存在不存在的帖子");
@@ -45,6 +46,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
 
         VoteActivity voteActivity = new VoteActivity();
         voteActivity.setPostIds(JSONUtil.toJsonStr(postIds));
+        // 保存投票活动
         voteActivityMapper.insert(voteActivity);
 
         for (Long postId : postIds) {
@@ -52,6 +54,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
             voteStat.setActivityId(voteActivity.getId());
             voteStat.setPostId(postId);
             voteStat.setVoteCount(0L);
+            // 保存投票统计
             voteStatMapper.insert(voteStat);
         }
 

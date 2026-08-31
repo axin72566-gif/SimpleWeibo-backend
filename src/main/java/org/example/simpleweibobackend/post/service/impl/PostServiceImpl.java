@@ -30,16 +30,19 @@ public class PostServiceImpl implements PostService {
         post.setUserId(userId);
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
+        // 插入数据库
         postMapper.insert(post);
         return PostVO.from(post);
     }
 
     @Override
     public PostDetailVO getPostDetail(Long id) {
+        // 查询帖子
         Post post = postMapper.selectById(id);
         if (post == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
         }
+        // 查询作者
         User author = userMapper.selectById(post.getUserId());
         return PostDetailVO.from(post, author);
     }

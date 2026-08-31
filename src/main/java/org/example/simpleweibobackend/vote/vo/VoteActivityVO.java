@@ -17,10 +17,19 @@ import java.util.List;
 @AllArgsConstructor
 public class VoteActivityVO {
 
+    /**
+     * 活动ID
+     */
     private Long id;
 
+    /**
+     * 帖子ID列表
+     */
     private List<Long> postIds;
 
+    /**
+     * 创建时间
+     */
     private LocalDateTime createTime;
 
     public static VoteActivityVO from(VoteActivity voteActivity) {
