@@ -12,7 +12,6 @@ import org.example.simpleweibobackend.vote.entity.VoteStat;
 import org.example.simpleweibobackend.vote.mapper.VoteRecordMapper;
 import org.example.simpleweibobackend.vote.mapper.VoteStatMapper;
 import org.example.simpleweibobackend.vote.service.VoteService;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
