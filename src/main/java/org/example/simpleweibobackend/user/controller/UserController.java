@@ -6,8 +6,6 @@ import org.example.simpleweibobackend.common.Result;
 import org.example.simpleweibobackend.user.dto.RegisterRequest;
 import org.example.simpleweibobackend.user.service.UserService;
 import org.example.simpleweibobackend.user.vo.RegisterVO;
-import org.example.simpleweibobackend.user.vo.UserVO;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +21,5 @@ public class UserController {
     @PostMapping("/register")
     public Result<RegisterVO> register(@Valid @RequestBody RegisterRequest request) {
         return Result.success(userService.register(request));
-    }
-
-    @GetMapping("/me")
-    public Result<UserVO> me() {
-        return Result.success(userService.getCurrentUser());
     }
 }

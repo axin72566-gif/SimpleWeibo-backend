@@ -9,9 +9,7 @@ import org.example.simpleweibobackend.user.entity.User;
 import org.example.simpleweibobackend.user.mapper.UserMapper;
 import org.example.simpleweibobackend.user.service.UserService;
 import org.example.simpleweibobackend.user.vo.RegisterVO;
-import org.example.simpleweibobackend.user.vo.UserVO;
 import org.example.simpleweibobackend.common.util.PasswordUtil;
-import org.example.simpleweibobackend.common.util.UserContext;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -41,16 +39,5 @@ public class UserServiceImpl implements UserService {
         userMapper.insert(user);
 
         return RegisterVO.from(user);
-    }
-
-    @Override
-    public UserVO getCurrentUser() {
-        Long userId = UserContext.getUserId();
-        // 查询用户
-        User user = userMapper.selectById(userId);
-        if (user == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "用户不存在");
-        }
-        return UserVO.from(user);
     }
 }
