@@ -1,12 +1,15 @@
 package org.example.simpleweibobackend.vote.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.common.util.UserContext;
 import org.example.simpleweibobackend.vote.dto.CastVoteRequest;
+import org.example.simpleweibobackend.vote.entity.VoteActivity;
 import org.example.simpleweibobackend.vote.event.VoteEvent;
+import org.example.simpleweibobackend.vote.mapper.VoteActivityMapper;
 import org.example.simpleweibobackend.vote.queue.VoteEventQueue;
 import org.example.simpleweibobackend.vote.service.VoteService;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -30,12 +33,26 @@ public class VoteServiceImpl implements VoteService {
     private final StringRedisTemplate stringRedisTemplate;
     private final DefaultRedisScript<Long> castVoteScript;
     private final VoteEventQueue voteEventQueue;
+    private final VoteActivityMapper voteActivityMapper;
 
     @Override
     public void castVote(CastVoteRequest request) {
         Long userId = UserContext.getUserId();
         Long activityId = request.getActivityId();
         Long postId = request.getPostId();
+
+        // 检查投票活动是否存在
+        VoteActivity voteActivity = voteActivityMapper.selectById(activityId);
+        if (voteActivity == null) {
+            throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
+        }
+
+        // 检查帖子是否在投票活动的帖子列表中
+        List<Long> postIdsList = JSONUtil.toList(voteActivity.getPostIds(), Long.class);
+        if (!postIdsList.contains(postId)) {
+            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在于投票活动");
+        }
+
         VoteEvent event = new VoteEvent(activityId, userId, postId);
 
         Long result = stringRedisTemplate.execute(
