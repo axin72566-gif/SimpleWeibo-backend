@@ -46,14 +46,11 @@ public class VoteServiceImpl implements VoteService {
         if (voteActivity == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
         }
-
         // 检查帖子是否在投票活动的帖子列表中
         List<Long> postIdsList = JSONUtil.toList(voteActivity.getPostIds(), Long.class);
         if (!postIdsList.contains(postId)) {
             throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在于投票活动");
         }
-
-        VoteEvent event = new VoteEvent(activityId, userId, postId);
 
         Long result = stringRedisTemplate.execute(
                 castVoteScript,
@@ -69,6 +66,7 @@ public class VoteServiceImpl implements VoteService {
         }
 
         if (result == VOTE_SUCCESS) {
+            VoteEvent event = new VoteEvent(activityId, userId, postId);
             enqueueVoteEvent(event);
             return;
         }
