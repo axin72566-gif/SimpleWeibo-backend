@@ -3,20 +3,12 @@ package org.example.simpleweibobackend.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.Result;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Result<Void>> handleResponseStatusException(ResponseStatusException e) {
-        return ResponseEntity.status(e.getStatusCode())
-                .body(Result.fail(e.getStatusCode().value(), e.getReason()));
-    }
 
     @ExceptionHandler(BizException.class)
     public Result<Void> handleBizException(BizException e) {
