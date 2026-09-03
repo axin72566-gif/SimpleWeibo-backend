@@ -30,7 +30,7 @@ public class VoteEventQueueConsumer {
     private final TransactionTemplate transactionTemplate;
 
     // 上一批消费结束后等待 1 秒，再处理下一批。
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 100)
     public void consume() {
         // 从内存队列移出最多 500 条事件，集中落库。
         List<VoteEvent> events = voteEventQueue.drain(BATCH_SIZE);
