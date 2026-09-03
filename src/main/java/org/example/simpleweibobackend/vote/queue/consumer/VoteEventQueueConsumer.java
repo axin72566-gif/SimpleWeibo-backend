@@ -55,7 +55,7 @@ public class VoteEventQueueConsumer {
     }
 
     private void consumeActivity(Long activityId, List<VoteEvent> events) {
-        // 只统计当前批次的票数增量，不读取仍在实时增长的 Redis 总票数。
+        // 只统计当前批次的票数增量
         Map<Long, Long> increments = new LinkedHashMap<>();
         List<VoteRecord> records = new ArrayList<>(events.size());
         for (VoteEvent event : events) {

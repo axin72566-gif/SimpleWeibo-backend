@@ -27,9 +27,9 @@ public class VoteServiceImpl implements VoteService {
     private static final int VOTE_OTHER = 0;
     private static final int VOTE_SUCCESS = 1;
     private static final int VOTE_SAME = 2;
-    private static final String USER_POST_KEY = "vote:activity:user:post:{%d}";
-    private static final String POST_COUNT_KEY = "vote:activity:post:count:{%d}";
-    private static final String DIRTY_USER_KEY = "vote:activity:dirty:user:{%d}";
+    private static final String USER_POST_KEY = "vote:activity:user:post:{%d}";   // hash
+    private static final String POST_COUNT_KEY = "vote:activity:post:count:{%d}";   // hash
+    private static final String DIRTY_USER_KEY = "vote:activity:dirty:user:{%d}";   // set
 
     private final StringRedisTemplate stringRedisTemplate;
     private final DefaultRedisScript<Long> castVoteScript;
