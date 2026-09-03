@@ -16,6 +16,9 @@ public final class UserContext {
     public static Long getUserId() {
         ServletRequestAttributes attributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        return Long.valueOf(attributes.getRequest().getHeader(USER_ID_HEADER));
+        if (attributes != null) {
+            return Long.valueOf(attributes.getRequest().getHeader(USER_ID_HEADER));
+        }
+        return null;
     }
 }
