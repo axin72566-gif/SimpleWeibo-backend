@@ -2,6 +2,7 @@ package org.example.simpleweibobackend.vote.service.impl;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
@@ -30,6 +31,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
     private final VoteActivityMapper voteActivityMapper;
     private final VoteStatMapper voteStatMapper;
     private final PostMapper postMapper;
+    private final Cache<Long, List<Long>> voteActivityCache;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -58,6 +60,7 @@ public class VoteActivityServiceImpl implements VoteActivityService {
             voteStatMapper.insert(voteStat);
         }
 
+        voteActivityCache.put(voteActivity.getId(), List.copyOf(postIds));
         return VoteActivityVO.from(voteActivity);
     }
 

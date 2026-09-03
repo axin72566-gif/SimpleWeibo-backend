@@ -1,6 +1,7 @@
 package org.example.simpleweibobackend.vote.service.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
@@ -34,6 +35,7 @@ public class VoteServiceImpl implements VoteService {
     private final DefaultRedisScript<Long> castVoteScript;
     private final VoteEventQueue voteEventQueue;
     private final VoteActivityMapper voteActivityMapper;
+    private final Cache<Long, List<Long>> voteActivityCache;
 
     @Override
     public void castVote(CastVoteRequest request) {
@@ -41,14 +43,16 @@ public class VoteServiceImpl implements VoteService {
         Long activityId = request.getActivityId();
         Long postId = request.getPostId();
 
-        // 检查投票活动是否存在
-        VoteActivity voteActivity = voteActivityMapper.selectById(activityId);
-        if (voteActivity == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
+        List<Long> postIds = voteActivityCache.getIfPresent(activityId);
+        if (postIds == null) {
+            VoteActivity activity = voteActivityMapper.selectById(activityId);
+            if (activity == null) {
+                throw new BizException(ErrorCode.NOT_FOUND, "投票活动不存在");
+            }
+            postIds = List.copyOf(JSONUtil.toList(activity.getPostIds(), Long.class));
+            voteActivityCache.put(activityId, postIds);
         }
-        // 检查帖子是否在投票活动的帖子列表中
-        List<Long> postIdsList = JSONUtil.toList(voteActivity.getPostIds(), Long.class);
-        if (!postIdsList.contains(postId)) {
+        if (!postIds.contains(postId)) {
             throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在于投票活动");
         }
 
@@ -67,7 +71,10 @@ public class VoteServiceImpl implements VoteService {
 
         if (result == VOTE_SUCCESS) {
             VoteEvent event = new VoteEvent(activityId, userId, postId);
-            enqueueVoteEvent(event);
+            boolean enqueue = voteEventQueue.offer(event);
+            if (!enqueue) {
+                log.warn("投票事件队列已满，等待补偿任务处理，activityId={}, userId={}", event.getActivityId(), event.getUserId());
+            }
             return;
         }
         if (result == VOTE_SAME) {
@@ -77,13 +84,5 @@ public class VoteServiceImpl implements VoteService {
             throw new BizException(ErrorCode.CONFLICT, "已投给其他帖子，不能修改投票");
         }
         throw new BizException(ErrorCode.INTERNAL_ERROR, "投票处理结果异常");
-    }
-
-    private void enqueueVoteEvent(VoteEvent event) {
-        boolean enqueue = voteEventQueue.offer(event);
-        if (!enqueue) {
-            log.warn("投票事件队列已满，等待补偿任务处理，activityId={}, userId={}",
-                    event.getActivityId(), event.getUserId());
-        }
     }
 }
