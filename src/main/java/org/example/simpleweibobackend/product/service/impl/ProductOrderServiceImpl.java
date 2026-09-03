@@ -35,6 +35,7 @@ public class ProductOrderServiceImpl implements ProductOrderService {
             throw new BizException(ErrorCode.BAD_REQUEST, "商品已下架");
         }
 
+        // 扣减库存
         int affectedRows = productMapper.deductStock(
                 product.getId(), request.getQuantity(), ProductStatus.ON_SALE.getValue());
         if (affectedRows == 0) {
