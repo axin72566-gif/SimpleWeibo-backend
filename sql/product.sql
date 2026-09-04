@@ -2,7 +2,6 @@ create table product
 (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '商品ID',
     name        VARCHAR(100)   NOT NULL COMMENT '商品名称',
-    description TEXT COMMENT '商品描述',
     price       DECIMAL(10, 2) NOT NULL COMMENT '售价，单位：元',
     stock       INT            NOT NULL DEFAULT 0 COMMENT '库存',
     status      TINYINT        NOT NULL DEFAULT 0 COMMENT '0下架，1上架',

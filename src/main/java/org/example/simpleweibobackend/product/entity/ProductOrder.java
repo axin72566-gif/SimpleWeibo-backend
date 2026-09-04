@@ -26,8 +26,6 @@ public class ProductOrder {
 
     private BigDecimal unitPrice;
 
-    private Integer quantity;
-
     private BigDecimal totalAmount;
 
     private ProductOrderStatus status;

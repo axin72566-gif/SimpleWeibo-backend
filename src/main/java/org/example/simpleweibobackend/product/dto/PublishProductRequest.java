@@ -17,9 +17,6 @@ public class PublishProductRequest {
     @Size(max = 100, message = "商品名称不能超过100个字符")
     private String name;
 
-    @Size(max = 1000, message = "商品描述不能超过1000个字符")
-    private String description;
-
     @NotNull(message = "商品价格不能为空")
     @DecimalMin(value = "0.01", message = "商品价格必须大于0")
     @Digits(integer = 8, fraction = 2, message = "商品价格最多为8位整数和2位小数")

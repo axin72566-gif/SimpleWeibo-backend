@@ -18,7 +18,6 @@ public class ProductServiceImpl implements ProductService {
     public Long publishProduct(PublishProductRequest request) {
         Product product = new Product();
         product.setName(request.getName());
-        product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setStock(request.getStock());
         product.setStatus(ProductStatus.ON_SALE);

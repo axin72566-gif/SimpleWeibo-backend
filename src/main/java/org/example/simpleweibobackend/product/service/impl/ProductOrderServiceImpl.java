@@ -16,7 +16,6 @@ import org.example.simpleweibobackend.product.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +43,7 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 
         // 扣减库存
         int affectedRows = productMapper.deductStock(
-                product.getId(), request.getQuantity(), ProductStatus.ON_SALE.getValue());
+                product.getId(), ProductStatus.ON_SALE.getValue());
         if (affectedRows == 0) {
             throw new BizException(ErrorCode.BAD_REQUEST, "商品库存不足或已下架");
         }
@@ -54,8 +53,7 @@ public class ProductOrderServiceImpl implements ProductOrderService {
         order.setProductId(product.getId());
         order.setProductName(product.getName());
         order.setUnitPrice(product.getPrice());
-        order.setQuantity(request.getQuantity());
-        order.setTotalAmount(product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
+        order.setTotalAmount(product.getPrice());
         order.setStatus(ProductOrderStatus.PENDING_PAYMENT);
         order.setExpireTime(LocalDateTime.now().plusMinutes(PAYMENT_TIMEOUT_MINUTES));
         productOrderMapper.insert(order);
@@ -109,7 +107,7 @@ public class ProductOrderServiceImpl implements ProductOrderService {
                     ProductOrderStatus.CLOSED.getValue(),
                     now);
             if (affectedRows == 1) {
-                productMapper.restoreStock(order.getProductId(), order.getQuantity());
+                productMapper.restoreStock(order.getProductId());
             }
         }
     }
