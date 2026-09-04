@@ -24,8 +24,6 @@ public class ProductOrder {
 
     private String productName;
 
-    private BigDecimal unitPrice;
-
     private BigDecimal totalAmount;
 
     private ProductOrderStatus status;

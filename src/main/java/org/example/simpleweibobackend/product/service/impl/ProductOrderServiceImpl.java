@@ -52,7 +52,6 @@ public class ProductOrderServiceImpl implements ProductOrderService {
         order.setUserId(userId);
         order.setProductId(product.getId());
         order.setProductName(product.getName());
-        order.setUnitPrice(product.getPrice());
         order.setTotalAmount(product.getPrice());
         order.setStatus(ProductOrderStatus.PENDING_PAYMENT);
         order.setExpireTime(LocalDateTime.now().plusMinutes(PAYMENT_TIMEOUT_MINUTES));
