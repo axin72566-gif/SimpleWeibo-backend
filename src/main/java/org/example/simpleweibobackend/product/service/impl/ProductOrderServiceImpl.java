@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -80,11 +82,35 @@ public class ProductOrderServiceImpl implements ProductOrderService {
             throw new BizException(ErrorCode.BAD_REQUEST, "订单已超时，无法支付");
         }
 
-        // 开发阶段模拟支付成功。
-        order.setStatus(ProductOrderStatus.PAID);
-        order.setPaidTime(now);
-        if (productOrderMapper.updateById(order) != 1) {
-            throw new BizException(ErrorCode.INTERNAL_ERROR, "订单支付状态更新失败");
+        int affectedRows = productOrderMapper.payPendingOrder(
+                orderId,
+                userId,
+                ProductOrderStatus.PENDING_PAYMENT.getValue(),
+                ProductOrderStatus.PAID.getValue(),
+                now);
+        if (affectedRows == 0) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "订单状态已变化，支付失败");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void closeExpiredOrders() {
+        LocalDateTime now = LocalDateTime.now();
+        List<ProductOrder> expiredOrders = productOrderMapper.selectList(
+                new LambdaQueryWrapper<ProductOrder>()
+                        .eq(ProductOrder::getStatus, ProductOrderStatus.PENDING_PAYMENT)
+                        .le(ProductOrder::getExpireTime, now));
+
+        for (ProductOrder order : expiredOrders) {
+            int affectedRows = productOrderMapper.closeExpiredOrder(
+                    order.getId(),
+                    ProductOrderStatus.PENDING_PAYMENT.getValue(),
+                    ProductOrderStatus.CLOSED.getValue(),
+                    now);
+            if (affectedRows == 1) {
+                productMapper.restoreStock(order.getProductId(), order.getQuantity());
+            }
         }
     }
 }

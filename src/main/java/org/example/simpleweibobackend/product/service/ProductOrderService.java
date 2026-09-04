@@ -7,4 +7,6 @@ public interface ProductOrderService {
     Long createOrder(PurchaseProductRequest request);
 
     void payOrder(Long orderId);
+
+    void closeExpiredOrders();
 }
