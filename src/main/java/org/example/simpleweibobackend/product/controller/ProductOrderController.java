@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.Result;
 import org.example.simpleweibobackend.product.dto.PurchaseProductRequest;
 import org.example.simpleweibobackend.product.service.ProductOrderService;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,4 +23,9 @@ public class ProductOrderController {
         return Result.success(productOrderService.createOrder(request));
     }
 
+    @PostMapping("/{orderId}/pay")
+    public Result<Void> payOrder(@PathVariable Long orderId) {
+        productOrderService.payOrder(orderId);
+        return Result.success();
+    }
 }

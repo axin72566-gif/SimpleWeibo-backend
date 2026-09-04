@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -59,4 +60,31 @@ public class ProductOrderServiceImpl implements ProductOrderService {
         return order.getId();
     }
 
+    @Override
+    @Transactional
+    public void payOrder(Long orderId) {
+        Long userId = UserContext.getUserId();
+        ProductOrder order = productOrderMapper.selectById(orderId);
+        if (order == null || !Objects.equals(order.getUserId(), userId)) {
+            throw new BizException(ErrorCode.NOT_FOUND, "订单不存在");
+        }
+        if (order.getStatus() == ProductOrderStatus.PAID) {
+            return;
+        }
+        if (order.getStatus() != ProductOrderStatus.PENDING_PAYMENT) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "订单状态不允许支付");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (!now.isBefore(order.getExpireTime())) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "订单已超时，无法支付");
+        }
+
+        // 开发阶段模拟支付成功。
+        order.setStatus(ProductOrderStatus.PAID);
+        order.setPaidTime(now);
+        if (productOrderMapper.updateById(order) != 1) {
+            throw new BizException(ErrorCode.INTERNAL_ERROR, "订单支付状态更新失败");
+        }
+    }
 }
