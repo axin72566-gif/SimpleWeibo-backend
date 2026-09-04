@@ -19,4 +19,12 @@ public interface ProductMapper extends BaseMapper<Product> {
     int deductStock(@Param("productId") Long productId,
                     @Param("quantity") Integer quantity,
                     @Param("status") int status);
+
+    @Update("""
+            UPDATE product
+            SET stock = stock + #{quantity}, updated_at = CURRENT_TIMESTAMP
+            WHERE id = #{productId}
+            """)
+    int restoreStock(@Param("productId") Long productId,
+                     @Param("quantity") Integer quantity);
 }

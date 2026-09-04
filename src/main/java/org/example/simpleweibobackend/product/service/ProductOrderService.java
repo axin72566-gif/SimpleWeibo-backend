@@ -4,5 +4,9 @@ import org.example.simpleweibobackend.product.dto.PurchaseProductRequest;
 
 public interface ProductOrderService {
 
-    Long purchaseProduct(PurchaseProductRequest request);
+    Long createOrder(PurchaseProductRequest request);
+
+    void payOrder(Long orderId);
+
+    void closeExpiredOrders();
 }

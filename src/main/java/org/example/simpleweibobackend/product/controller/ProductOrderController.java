@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -18,7 +19,13 @@ public class ProductOrderController {
     private final ProductOrderService productOrderService;
 
     @PostMapping
-    public Result<Long> purchaseProduct(@Valid @RequestBody PurchaseProductRequest request) {
-        return Result.success(productOrderService.purchaseProduct(request));
+    public Result<Long> createOrder(@Valid @RequestBody PurchaseProductRequest request) {
+        return Result.success(productOrderService.createOrder(request));
+    }
+
+    @PostMapping("/{orderId}/pay")
+    public Result<Void> payOrder(@PathVariable Long orderId) {
+        productOrderService.payOrder(orderId);
+        return Result.success();
     }
 }

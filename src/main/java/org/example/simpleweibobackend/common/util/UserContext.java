@@ -1,5 +1,7 @@
 package org.example.simpleweibobackend.common.util;
 
+import org.example.simpleweibobackend.common.ErrorCode;
+import org.example.simpleweibobackend.common.exception.BizException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -14,11 +16,16 @@ public final class UserContext {
     }
 
     public static Long getUserId() {
-        ServletRequestAttributes attributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes != null) {
-            return Long.valueOf(attributes.getRequest().getHeader(USER_ID_HEADER));
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "请求不能为空");
         }
-        return null;
+
+        String header = attributes.getRequest().getHeader(USER_ID_HEADER);
+        if (header == null) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "请求头中未指定用户ID");
+        }
+
+        return Long.valueOf(header);
     }
 }

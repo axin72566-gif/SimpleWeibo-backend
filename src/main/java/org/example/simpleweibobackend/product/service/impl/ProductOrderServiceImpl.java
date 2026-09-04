@@ -1,11 +1,13 @@
 package org.example.simpleweibobackend.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.common.util.UserContext;
 import org.example.simpleweibobackend.product.dto.PurchaseProductRequest;
 import org.example.simpleweibobackend.product.entity.ProductOrder;
+import org.example.simpleweibobackend.product.enums.ProductOrderStatus;
 import org.example.simpleweibobackend.product.mapper.ProductOrderMapper;
 import org.example.simpleweibobackend.product.service.ProductOrderService;
 import org.example.simpleweibobackend.product.entity.Product;
@@ -15,17 +17,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ProductOrderServiceImpl implements ProductOrderService {
+
+    private static final long PAYMENT_TIMEOUT_MINUTES = 15;
 
     private final ProductMapper productMapper;
     private final ProductOrderMapper productOrderMapper;
 
     @Override
     @Transactional
-    public Long purchaseProduct(PurchaseProductRequest request) {
+    public Long createOrder(PurchaseProductRequest request) {
         Long userId = UserContext.getUserId();
         Product product = productMapper.selectById(request.getProductId());
         if (product == null) {
@@ -49,7 +56,51 @@ public class ProductOrderServiceImpl implements ProductOrderService {
         order.setUnitPrice(product.getPrice());
         order.setQuantity(request.getQuantity());
         order.setTotalAmount(product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
+        order.setStatus(ProductOrderStatus.PENDING_PAYMENT);
+        order.setExpireTime(LocalDateTime.now().plusMinutes(PAYMENT_TIMEOUT_MINUTES));
         productOrderMapper.insert(order);
         return order.getId();
+    }
+
+    @Override
+    @Transactional(noRollbackFor = BizException.class)
+    public void payOrder(Long orderId) {
+        Long userId = UserContext.getUserId();
+        ProductOrder order = productOrderMapper.selectById(orderId);
+        if (order == null || !Objects.equals(order.getUserId(), userId)) {
+            throw new BizException(ErrorCode.NOT_FOUND, "订单不存在");
+        }
+        if (order.getStatus() == ProductOrderStatus.PAID) {
+            return;
+        }
+        if (order.getStatus() == ProductOrderStatus.CLOSED) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "订单已关闭");
+        }
+        if (!LocalDateTime.now().isBefore(order.getExpireTime())) {
+            order.setStatus(ProductOrderStatus.CLOSED);
+            order.setClosedTime(LocalDateTime.now());
+            productOrderMapper.updateById(order);
+            productMapper.restoreStock(order.getProductId(), order.getQuantity());
+            throw new BizException(ErrorCode.BAD_REQUEST, "订单已超时关闭");
+        }
+
+        order.setStatus(ProductOrderStatus.PAID);
+        order.setPaidTime(LocalDateTime.now());
+        productOrderMapper.updateById(order);
+    }
+
+    @Override
+    @Transactional
+    public void closeExpiredOrders() {
+        List<ProductOrder> expiredOrders = productOrderMapper.selectList(
+                new LambdaQueryWrapper<ProductOrder>()
+                        .eq(ProductOrder::getStatus, ProductOrderStatus.PENDING_PAYMENT)
+                        .le(ProductOrder::getExpireTime, LocalDateTime.now()));
+        for (ProductOrder order : expiredOrders) {
+            order.setStatus(ProductOrderStatus.CLOSED);
+            order.setClosedTime(LocalDateTime.now());
+            productOrderMapper.updateById(order);
+            productMapper.restoreStock(order.getProductId(), order.getQuantity());
+        }
     }
 }

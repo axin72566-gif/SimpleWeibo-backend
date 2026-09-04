@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.example.simpleweibobackend.product.enums.ProductOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,6 +29,14 @@ public class ProductOrder {
     private Integer quantity;
 
     private BigDecimal totalAmount;
+
+    private ProductOrderStatus status;
+
+    private LocalDateTime expireTime;
+
+    private LocalDateTime paidTime;
+
+    private LocalDateTime closedTime;
 
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
