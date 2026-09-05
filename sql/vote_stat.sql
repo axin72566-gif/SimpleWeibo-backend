@@ -9,5 +9,3 @@ create table vote_stat
     update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
 )
     comment '投票计数表(每个活动每个帖子一行,创建活动时初始化,对账任务重算)' collate = utf8mb4_unicode_ci;
-
-ALTER TABLE vote_stat ADD UNIQUE KEY uk_activity_post (activity_id, post_id);

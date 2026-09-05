@@ -10,6 +10,3 @@ create table user
     update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
 )
     comment '用户表' collate = utf8mb4_unicode_ci;
-
-ALTER TABLE user ADD UNIQUE KEY uk_username (username);
-

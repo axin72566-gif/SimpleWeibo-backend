@@ -9,5 +9,3 @@ create table vote_record
     update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
 )
     comment '投票记录表(一人一活动仅一条)' collate = utf8mb4_unicode_ci;
-
-ALTER TABLE vote_record ADD UNIQUE KEY uk_activity_user (activity_id, user_id);
