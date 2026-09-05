@@ -7,6 +7,7 @@ create table user
     nickname    varchar(50)                        null comment '昵称',
     bio         varchar(255)                       null comment '个人简介',
     create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
-    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
+    unique key uk_username (username)
 )
     comment '用户表' collate = utf8mb4_unicode_ci;

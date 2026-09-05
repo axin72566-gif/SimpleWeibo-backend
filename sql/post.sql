@@ -6,6 +6,8 @@ create table post
     title       varchar(100)                        not null comment '帖子标题',
     content     varchar(500)                        not null comment '帖子正文',
     create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
-    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
+    key idx_user_create_time (user_id, create_time),
+    key idx_create_time (create_time)
 )
     comment '帖子表' collate = utf8mb4_unicode_ci;
