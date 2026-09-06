@@ -47,7 +47,7 @@ public class PostServiceImpl implements PostService {
                 .eq(PostLike::getPostId, postId)
                 .eq(PostLike::getUserId, userId));
         if (alreadyLiked) {
-            return post.getLikeCount();
+            throw new BizException(ErrorCode.HAS_DONE, "已点赞");
         }
 
         PostLike postLike = new PostLike();
