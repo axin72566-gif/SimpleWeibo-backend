@@ -6,7 +6,9 @@ import org.example.simpleweibobackend.common.Result;
 import org.example.simpleweibobackend.post.dto.CreatePostRequest;
 import org.example.simpleweibobackend.post.service.PostService;
 import org.example.simpleweibobackend.post.vo.PostVO;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,4 +24,10 @@ public class PostController {
     public Result<PostVO> createPost(@Valid @RequestBody CreatePostRequest request) {
         return Result.success(postService.createPost(request));
     }
+
+    @PutMapping("/{postId}/like")
+    public Result<Long> likePost(@PathVariable Long postId) {
+        return Result.success(postService.likePost(postId));
+    }
+
 }

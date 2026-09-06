@@ -31,12 +31,17 @@ public class PostVO {
     private String content;
 
     /**
+     * 点赞数
+     */
+    private Long likeCount;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;
 
     public static PostVO from(Post post) {
         return new PostVO(post.getId(), post.getUserId(),
-                post.getTitle(), post.getContent(), post.getCreateTime());
+                post.getTitle(), post.getContent(), post.getLikeCount(), post.getCreateTime());
     }
 }
