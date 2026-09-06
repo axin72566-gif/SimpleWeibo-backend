@@ -6,6 +6,4 @@ import org.example.simpleweibobackend.post.vo.PostVO;
 public interface PostService {
 
     PostVO createPost(CreatePostRequest request);
-
-    void likePost(Long postId);
 }
