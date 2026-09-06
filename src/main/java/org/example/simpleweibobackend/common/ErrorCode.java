@@ -11,7 +11,7 @@ public enum ErrorCode {
     BAD_REQUEST(400, "请求参数错误"),
     NOT_FOUND(404, "资源不存在"),
     CONFLICT(409, "资源已存在"),
-    HAS_DONE(410, "已操作"),
+    HAS_DONE(409, "已操作"),
     INTERNAL_ERROR(500, "服务器内部错误");
 
     private final Integer code;
