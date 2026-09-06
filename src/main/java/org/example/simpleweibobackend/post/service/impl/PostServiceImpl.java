@@ -1,6 +1,7 @@
 package org.example.simpleweibobackend.post.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
@@ -36,7 +37,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Long likePost(Long postId) {
+    public void likePost(Long postId) {
         Long userId = UserContext.getUserId();
         Post post = postMapper.selectById(postId);
         if (post == null) {
@@ -55,9 +56,8 @@ public class PostServiceImpl implements PostService {
         postLike.setUserId(userId);
         postLikeMapper.insert(postLike);
 
-        long likeCount = post.getLikeCount() + 1;
-        post.setLikeCount(likeCount);
-        postMapper.updateById(post);
-        return likeCount;
+        postMapper.update(null, new LambdaUpdateWrapper<Post>()
+                .eq(Post::getId, postId)
+                .setIncrBy(Post::getLikeCount, 1));
     }
 }

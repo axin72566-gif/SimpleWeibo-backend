@@ -7,5 +7,5 @@ public interface PostService {
 
     PostVO createPost(CreatePostRequest request);
 
-    Long likePost(Long postId);
+    void likePost(Long postId);
 }

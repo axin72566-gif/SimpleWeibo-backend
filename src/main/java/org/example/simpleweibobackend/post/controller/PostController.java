@@ -26,8 +26,9 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/like")
-    public Result<Long> likePost(@PathVariable Long postId) {
-        return Result.success(postService.likePost(postId));
+    public Result<Void> likePost(@PathVariable Long postId) {
+        postService.likePost(postId);
+        return Result.success();
     }
 
 }
