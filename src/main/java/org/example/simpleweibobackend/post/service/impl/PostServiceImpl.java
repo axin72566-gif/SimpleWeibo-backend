@@ -1,6 +1,8 @@
 package org.example.simpleweibobackend.post.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.simpleweibobackend.common.ErrorCode;
+import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.common.util.UserContext;
 import org.example.simpleweibobackend.post.dto.CreatePostRequest;
 import org.example.simpleweibobackend.post.entity.Post;
@@ -24,6 +26,15 @@ public class PostServiceImpl implements PostService {
         post.setContent(request.getContent());
         // 插入数据库
         postMapper.insert(post);
+        return PostVO.from(post);
+    }
+
+    @Override
+    public PostVO getPostById(Long id) {
+        Post post = postMapper.selectById(id);
+        if (post == null) {
+            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
+        }
         return PostVO.from(post);
     }
 }
