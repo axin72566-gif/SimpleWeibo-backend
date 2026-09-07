@@ -16,4 +16,8 @@ public class PostLikeEventQueue {
     public boolean offer(PostLikeEvent event) {
         return queue.offer(event);
     }
+
+    public PostLikeEvent poll() {
+        return queue.poll();
+    }
 }
