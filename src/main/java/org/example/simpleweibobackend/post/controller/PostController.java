@@ -9,6 +9,7 @@ import org.example.simpleweibobackend.post.vo.PostVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,5 +29,11 @@ public class PostController {
     @GetMapping("/{id}")
     public Result<PostVO> getPostById(@PathVariable Long id) {
         return Result.success(postService.getPostById(id));
+    }
+
+    @PutMapping("/{postId}/like")
+    public Result<Void> likePost(@PathVariable Long postId) {
+        postService.likePost(postId);
+        return Result.success();
     }
 }

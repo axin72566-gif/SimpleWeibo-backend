@@ -5,6 +5,7 @@ create table post
     user_id     bigint unsigned                     not null comment '发布者用户ID',
     title       varchar(100)                        not null comment '帖子标题',
     content     varchar(500)                        not null comment '帖子正文',
+    like_count  bigint unsigned default 0           not null comment '点赞数',
     create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
 )

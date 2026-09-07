@@ -8,4 +8,6 @@ public interface PostService {
     PostVO createPost(CreatePostRequest request);
 
     PostVO getPostById(Long id);
+
+    void likePost(Long postId);
 }
