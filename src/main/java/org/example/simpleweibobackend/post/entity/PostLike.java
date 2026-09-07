@@ -10,7 +10,13 @@ import org.example.simpleweibobackend.common.BaseEntity;
 @TableName("post_like")
 public class PostLike extends BaseEntity {
 
+    /**
+     * 帖子id
+     */
     private Long postId;
 
+    /**
+     * 用户id
+     */
     private Long userId;
 }

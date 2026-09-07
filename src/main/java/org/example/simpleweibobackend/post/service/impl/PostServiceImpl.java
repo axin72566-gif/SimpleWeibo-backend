@@ -55,7 +55,6 @@ public class PostServiceImpl implements PostService {
         post.setUserId(userId);
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
-        // 插入数据库
         postMapper.insert(post);
         postCache.put(post.getId(), post);
         return PostVO.from(post);

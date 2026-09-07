@@ -7,7 +7,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PostLikeEvent {
 
+    /**
+     * 帖子id
+     */
     private Long postId;
 
+    /**
+     * 用户id
+     */
     private Long userId;
 }

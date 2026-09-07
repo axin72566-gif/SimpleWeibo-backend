@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RegisterVO register(RegisterRequest request) {
-        // 校验用户名是否存在
         boolean exists = userMapper.exists(new QueryWrapper<User>()
                 .eq("username", request.getUsername()));
         if (exists) {
@@ -37,7 +36,6 @@ public class UserServiceImpl implements UserService {
         user.setUsername(request.getUsername());
         user.setPassword(DigestUtils.sha1DigestAsHex(request.getPassword() + SALT));
         user.setNickname(nickname);
-        // 保存用户
         userMapper.insert(user);
 
         return RegisterVO.from(user);
