@@ -1,14 +1,11 @@
-package org.example.simpleweibobackend.user.service.impl;
+package org.example.simpleweibobackend.user.register;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
-import org.example.simpleweibobackend.user.dto.RegisterRequest;
-import org.example.simpleweibobackend.user.entity.User;
-import org.example.simpleweibobackend.user.mapper.UserMapper;
-import org.example.simpleweibobackend.user.service.UserService;
-import org.example.simpleweibobackend.user.vo.RegisterVO;
+import org.example.simpleweibobackend.user.User;
+import org.example.simpleweibobackend.user.UserMapper;
 import org.springframework.data.redis.core.script.DigestUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +13,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class RegisterService {
 
     private static final String SALT = "simple_weibo_2026";
 
     private final UserMapper userMapper;
 
-    @Override
     public RegisterVO register(RegisterRequest request) {
         boolean exists = userMapper.exists(new QueryWrapper<User>()
                 .eq("username", request.getUsername()));

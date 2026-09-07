@@ -1,8 +1,8 @@
-package org.example.simpleweibobackend.user.vo;
+package org.example.simpleweibobackend.user.register;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.simpleweibobackend.user.entity.User;
+import org.example.simpleweibobackend.user.User;
 
 @Data
 @AllArgsConstructor

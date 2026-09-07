@@ -1,6 +1,5 @@
-package org.example.simpleweibobackend.post.queue;
+package org.example.simpleweibobackend.post.like.event;
 
-import org.example.simpleweibobackend.post.event.PostLikeEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

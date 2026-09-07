@@ -1,14 +1,12 @@
-package org.example.simpleweibobackend.post.queue.consumer;
+package org.example.simpleweibobackend.post.like.event;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.simpleweibobackend.post.entity.Post;
-import org.example.simpleweibobackend.post.entity.PostLike;
-import org.example.simpleweibobackend.post.event.PostLikeEvent;
-import org.example.simpleweibobackend.post.mapper.PostLikeMapper;
-import org.example.simpleweibobackend.post.mapper.PostMapper;
-import org.example.simpleweibobackend.post.queue.PostLikeEventQueue;
+import org.example.simpleweibobackend.post.Post;
+import org.example.simpleweibobackend.post.PostMapper;
+import org.example.simpleweibobackend.post.like.PostLike;
+import org.example.simpleweibobackend.post.like.PostLikeMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;

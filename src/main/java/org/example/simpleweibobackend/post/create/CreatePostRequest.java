@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.post.dto;
+package org.example.simpleweibobackend.post.create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

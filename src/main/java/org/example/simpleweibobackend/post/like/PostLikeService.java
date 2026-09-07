@@ -1,17 +1,14 @@
-package org.example.simpleweibobackend.post.service.impl;
+package org.example.simpleweibobackend.post.like;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
-import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.common.UserContext;
-import org.example.simpleweibobackend.post.dto.CreatePostRequest;
-import org.example.simpleweibobackend.post.entity.Post;
-import org.example.simpleweibobackend.post.event.PostLikeEvent;
-import org.example.simpleweibobackend.post.mapper.PostMapper;
-import org.example.simpleweibobackend.post.queue.PostLikeEventQueue;
-import org.example.simpleweibobackend.post.service.PostService;
-import org.example.simpleweibobackend.post.vo.PostVO;
+import org.example.simpleweibobackend.common.exception.BizException;
+import org.example.simpleweibobackend.post.Post;
+import org.example.simpleweibobackend.post.PostMapper;
+import org.example.simpleweibobackend.post.like.event.PostLikeEvent;
+import org.example.simpleweibobackend.post.like.event.PostLikeEventQueue;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -21,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PostServiceImpl implements PostService {
+public class PostLikeService {
 
     private static final String LIKE_USERS = "post:like:users:";
     private static final String LIKE_COUNT = "post:like:count:";
@@ -41,27 +38,6 @@ public class PostServiceImpl implements PostService {
     private final StringRedisTemplate stringRedisTemplate;
     private final PostLikeEventQueue postLikeEventQueue;
 
-    @Override
-    public PostVO createPost(CreatePostRequest request) {
-        Long userId = UserContext.getUserId();
-        Post post = new Post();
-        post.setUserId(userId);
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-        postMapper.insert(post);
-        return PostVO.from(post);
-    }
-
-    @Override
-    public PostVO getPostById(Long id) {
-        Post post = postMapper.selectById(id);
-        if (post == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
-        }
-        return PostVO.from(post);
-    }
-
-    @Override
     public void likePost(Long postId) {
         Long userId = UserContext.getUserId();
         Post post = postMapper.selectById(postId);

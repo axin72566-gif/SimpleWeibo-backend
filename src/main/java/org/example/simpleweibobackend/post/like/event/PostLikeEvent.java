@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.post.event;
+package org.example.simpleweibobackend.post.like.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

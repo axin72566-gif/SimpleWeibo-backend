@@ -1,8 +1,7 @@
-package org.example.simpleweibobackend.post.vo;
+package org.example.simpleweibobackend.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.simpleweibobackend.post.entity.Post;
 
 import java.time.LocalDateTime;
 

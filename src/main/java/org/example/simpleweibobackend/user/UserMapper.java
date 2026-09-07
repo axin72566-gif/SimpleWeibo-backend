@@ -1,8 +1,7 @@
-package org.example.simpleweibobackend.user.mapper;
+package org.example.simpleweibobackend.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.simpleweibobackend.user.entity.User;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {

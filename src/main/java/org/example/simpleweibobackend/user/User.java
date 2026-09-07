@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.user.entity;
+package org.example.simpleweibobackend.user;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -24,5 +24,4 @@ public class User extends BaseEntity {
      * 昵称
      */
     private String nickname;
-
 }

@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.user.dto;
+package org.example.simpleweibobackend.user.register;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
