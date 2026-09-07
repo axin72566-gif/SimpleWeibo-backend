@@ -25,8 +25,4 @@ public class User extends BaseEntity {
      */
     private String nickname;
 
-    /**
-     * 个人简介
-     */
-    private String bio;
 }

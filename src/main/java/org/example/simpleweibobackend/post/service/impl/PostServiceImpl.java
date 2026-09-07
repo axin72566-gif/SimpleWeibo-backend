@@ -43,7 +43,7 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final PostLikeEventQueue postLikeEventQueue;
-    private final Cache<Long, Post> postCache = Caffeine.newBuilder()
+    private final Cache<Long, Post> postLocalCache = Caffeine.newBuilder()
             .maximumSize(100_000)
             .expireAfterAccess(Duration.ofMinutes(30))
             .build();
@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         postMapper.insert(post);
-        postCache.put(post.getId(), post);
+        postLocalCache.put(post.getId(), post);
         return PostVO.from(post);
     }
 
@@ -72,7 +72,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void likePost(Long postId) {
         Long userId = UserContext.getUserId();
-        Post post = postCache.get(postId, postMapper::selectById);
+        Post post = postLocalCache.get(postId, postMapper::selectById);
         if (post == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
         }
