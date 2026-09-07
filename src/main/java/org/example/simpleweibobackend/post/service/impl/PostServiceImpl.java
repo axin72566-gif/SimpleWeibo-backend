@@ -1,5 +1,7 @@
 package org.example.simpleweibobackend.post.service.impl;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
@@ -16,6 +18,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -25,31 +28,6 @@ public class PostServiceImpl implements PostService {
 
     private static final String LIKE_USERS = "post:like:users:";
     private static final String LIKE_COUNT = "post:like:count:";
-
-    private final PostMapper postMapper;
-    private final StringRedisTemplate stringRedisTemplate;
-    private final PostLikeEventQueue postLikeEventQueue;
-
-    @Override
-    public PostVO createPost(CreatePostRequest request) {
-        Long userId = UserContext.getUserId();
-        Post post = new Post();
-        post.setUserId(userId);
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-        // 插入数据库
-        postMapper.insert(post);
-        return PostVO.from(post);
-    }
-
-    @Override
-    public PostVO getPostById(Long id) {
-        Post post = postMapper.selectById(id);
-        if (post == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
-        }
-        return PostVO.from(post);
-    }
 
     private static final DefaultRedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
             local added = redis.call('SADD', KEYS[1], ARGV[1])
@@ -62,10 +40,40 @@ public class PostServiceImpl implements PostService {
             return redis.call('INCR', KEYS[2])
             """, Long.class);
 
+    private final PostMapper postMapper;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final PostLikeEventQueue postLikeEventQueue;
+    private final Cache<Long, Post> postCache = Caffeine.newBuilder()
+            .maximumSize(100_000)
+            .expireAfterAccess(Duration.ofMinutes(30))
+            .build();
+
+    @Override
+    public PostVO createPost(CreatePostRequest request) {
+        Long userId = UserContext.getUserId();
+        Post post = new Post();
+        post.setUserId(userId);
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
+        // 插入数据库
+        postMapper.insert(post);
+        postCache.put(post.getId(), post);
+        return PostVO.from(post);
+    }
+
+    @Override
+    public PostVO getPostById(Long id) {
+        Post post = postMapper.selectById(id);
+        if (post == null) {
+            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
+        }
+        return PostVO.from(post);
+    }
+
     @Override
     public void likePost(Long postId) {
         Long userId = UserContext.getUserId();
-        Post post = postMapper.selectById(postId);
+        Post post = postCache.get(postId, postMapper::selectById);
         if (post == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
         }
