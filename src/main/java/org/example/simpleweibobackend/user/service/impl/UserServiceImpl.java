@@ -9,7 +9,7 @@ import org.example.simpleweibobackend.user.entity.User;
 import org.example.simpleweibobackend.user.mapper.UserMapper;
 import org.example.simpleweibobackend.user.service.UserService;
 import org.example.simpleweibobackend.user.vo.RegisterVO;
-import org.example.simpleweibobackend.common.util.PasswordUtil;
+import org.springframework.data.redis.core.script.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,6 +17,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private static final String SALT = "simple_weibo_2026";
 
     private final UserMapper userMapper;
 
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(PasswordUtil.hash(request.getPassword()));
+        user.setPassword(DigestUtils.sha1DigestAsHex(request.getPassword() + SALT));
         user.setNickname(nickname);
         // 保存用户
         userMapper.insert(user);

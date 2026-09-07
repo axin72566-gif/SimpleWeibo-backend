@@ -1,6 +1,5 @@
-package org.example.simpleweibobackend.common.util;
+package org.example.simpleweibobackend.common;
 
-import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

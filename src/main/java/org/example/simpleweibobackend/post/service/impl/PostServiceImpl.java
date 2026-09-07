@@ -3,7 +3,7 @@ package org.example.simpleweibobackend.post.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
-import org.example.simpleweibobackend.common.util.UserContext;
+import org.example.simpleweibobackend.common.UserContext;
 import org.example.simpleweibobackend.post.dto.CreatePostRequest;
 import org.example.simpleweibobackend.post.entity.Post;
 import org.example.simpleweibobackend.post.mapper.PostMapper;
