@@ -71,12 +71,6 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
-<!--        caffeine-->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>

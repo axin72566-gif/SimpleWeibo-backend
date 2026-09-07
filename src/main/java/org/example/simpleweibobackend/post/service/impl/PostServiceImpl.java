@@ -1,7 +1,5 @@
 package org.example.simpleweibobackend.post.service.impl;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
@@ -18,7 +16,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -43,10 +40,6 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final PostLikeEventQueue postLikeEventQueue;
-    private final Cache<Long, Post> postLocalCache = Caffeine.newBuilder()
-            .maximumSize(100_000)
-            .expireAfterAccess(Duration.ofMinutes(30))
-            .build();
 
     @Override
     public PostVO createPost(CreatePostRequest request) {
@@ -56,7 +49,6 @@ public class PostServiceImpl implements PostService {
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         postMapper.insert(post);
-        postLocalCache.put(post.getId(), post);
         return PostVO.from(post);
     }
 
@@ -72,7 +64,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void likePost(Long postId) {
         Long userId = UserContext.getUserId();
-        Post post = postLocalCache.get(postId, postMapper::selectById);
+        Post post = postMapper.selectById(postId);
         if (post == null) {
             throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
         }
