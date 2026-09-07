@@ -26,17 +26,6 @@ public class PostServiceImpl implements PostService {
     private static final String LIKE_USERS = "post:like:users:";
     private static final String LIKE_COUNT = "post:like:count:";
 
-    private static final DefaultRedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
-            local added = redis.call('SADD', KEYS[1], ARGV[1])
-            if added == 0 then
-                return -1
-            end
-            if redis.call('EXISTS', KEYS[2]) == 0 then
-                redis.call('SET', KEYS[2], ARGV[2])
-            end
-            return redis.call('INCR', KEYS[2])
-            """, Long.class);
-
     private final PostMapper postMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final PostLikeEventQueue postLikeEventQueue;
@@ -61,6 +50,17 @@ public class PostServiceImpl implements PostService {
         }
         return PostVO.from(post);
     }
+
+    private static final DefaultRedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
+            local added = redis.call('SADD', KEYS[1], ARGV[1])
+            if added == 0 then
+                return -1
+            end
+            if redis.call('EXISTS', KEYS[2]) == 0 then
+                redis.call('SET', KEYS[2], ARGV[2])
+            end
+            return redis.call('INCR', KEYS[2])
+            """, Long.class);
 
     @Override
     public void likePost(Long postId) {
