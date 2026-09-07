@@ -3,6 +3,8 @@ package org.example.simpleweibobackend.post.queue;
 import org.example.simpleweibobackend.post.event.PostLikeEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -17,7 +19,9 @@ public class PostLikeEventQueue {
         return queue.offer(event);
     }
 
-    public PostLikeEvent poll() {
-        return queue.poll();
+    public List<PostLikeEvent> drain(int maxElements) {
+        List<PostLikeEvent> events = new ArrayList<>(maxElements);
+        queue.drainTo(events, maxElements);
+        return events;
     }
 }

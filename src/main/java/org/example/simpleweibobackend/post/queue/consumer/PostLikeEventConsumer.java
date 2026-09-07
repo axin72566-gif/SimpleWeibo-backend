@@ -1,6 +1,5 @@
 package org.example.simpleweibobackend.post.queue.consumer;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +13,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PostLikeEventConsumer {
 
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 500;
 
     private final PostLikeEventQueue postLikeEventQueue;
     private final PostLikeMapper postLikeMapper;
@@ -28,39 +31,38 @@ public class PostLikeEventConsumer {
 
     @Scheduled(fixedDelay = 100)
     public void consume() {
-        for (int i = 0; i < BATCH_SIZE; i++) {
-            PostLikeEvent event = postLikeEventQueue.poll();
-            if (event == null) {
-                return;
-            }
-
-            try {
-                transactionTemplate.executeWithoutResult(status -> persist(event));
-            } catch (Exception e) {
-                log.error("点赞事件处理失败, postId={}, userId={}",
-                        event.getPostId(), event.getUserId(), e);
-            }
-        }
-    }
-
-    private void persist(PostLikeEvent event) {
-        boolean alreadyPersisted = postLikeMapper.exists(new LambdaQueryWrapper<PostLike>()
-                .eq(PostLike::getPostId, event.getPostId())
-                .eq(PostLike::getUserId, event.getUserId()));
-        if (alreadyPersisted) {
+        List<PostLikeEvent> events = postLikeEventQueue.drain(BATCH_SIZE);
+        if (events.isEmpty()) {
             return;
         }
 
-        PostLike postLike = new PostLike();
-        postLike.setPostId(event.getPostId());
-        postLike.setUserId(event.getUserId());
-        postLikeMapper.insert(postLike);
+        try {
+            transactionTemplate.executeWithoutResult(status -> persist(events));
+        } catch (Exception e) {
+            log.error("点赞事件批量处理失败, batchSize={}", events.size(), e);
+        }
+    }
 
-        int updated = postMapper.update(null, new LambdaUpdateWrapper<Post>()
-                .eq(Post::getId, event.getPostId())
-                .setIncrBy(Post::getLikeCount, 1));
-        if (updated != 1) {
-            throw new IllegalStateException("更新帖子点赞数失败");
+    private void persist(List<PostLikeEvent> events) {
+        List<PostLike> postLikes = events.stream()
+                .map(event -> {
+                    PostLike postLike = new PostLike();
+                    postLike.setPostId(event.getPostId());
+                    postLike.setUserId(event.getUserId());
+                    return postLike;
+                })
+                .toList();
+        postLikeMapper.insert(postLikes, BATCH_SIZE);
+
+        Map<Long, Long> increments = events.stream()
+                .collect(Collectors.groupingBy(PostLikeEvent::getPostId, Collectors.counting()));
+        for (Map.Entry<Long, Long> entry : increments.entrySet()) {
+            int updated = postMapper.update(null, new LambdaUpdateWrapper<Post>()
+                    .eq(Post::getId, entry.getKey())
+                    .setIncrBy(Post::getLikeCount, entry.getValue()));
+            if (updated != 1) {
+                throw new IllegalStateException("更新帖子点赞数失败, postId=" + entry.getKey());
+            }
         }
     }
 }
