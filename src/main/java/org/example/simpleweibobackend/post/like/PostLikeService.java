@@ -21,17 +21,13 @@ import java.util.List;
 public class PostLikeService {
 
     private static final String LIKE_USERS = "post:like:users:";
-    private static final String LIKE_COUNT = "post:like:count:";
 
     private static final DefaultRedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
             local added = redis.call('SADD', KEYS[1], ARGV[1])
             if added == 0 then
                 return -1
             end
-            if redis.call('EXISTS', KEYS[2]) == 0 then
-                redis.call('SET', KEYS[2], ARGV[2])
-            end
-            return redis.call('INCR', KEYS[2])
+            return 1
             """, Long.class);
 
     private final PostMapper postMapper;
@@ -46,16 +42,14 @@ public class PostLikeService {
         }
 
         String usersKey = LIKE_USERS + postId;
-        String countKey = LIKE_COUNT + postId;
-        Long likeCount = stringRedisTemplate.execute(
+        Long result = stringRedisTemplate.execute(
                 LIKE_SCRIPT,
-                List.of(usersKey, countKey),
-                userId.toString(),
-                post.getLikeCount().toString());
-        if (likeCount == null) {
+                List.of(usersKey),
+                userId.toString());
+        if (result == null) {
             throw new BizException(ErrorCode.INTERNAL_ERROR, "点赞失败");
         }
-        if (likeCount == -1) {
+        if (result == -1) {
             throw new BizException(ErrorCode.CONFLICT, "已点赞");
         }
 
