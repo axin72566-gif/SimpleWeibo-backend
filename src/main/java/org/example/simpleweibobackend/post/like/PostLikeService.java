@@ -10,10 +10,7 @@ import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.like.event.PostLikeEvent;
 import org.example.simpleweibobackend.post.like.event.PostLikeEventQueue;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +18,6 @@ import java.util.List;
 public class PostLikeService {
 
     private static final String LIKE_USERS = "post:like:users:";
-
-    private static final DefaultRedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
-            local added = redis.call('SADD', KEYS[1], ARGV[1])
-            if added == 0 then
-                return -1
-            end
-            return 1
-            """, Long.class);
 
     private final PostMapper postMapper;
     private final StringRedisTemplate stringRedisTemplate;
@@ -42,14 +31,11 @@ public class PostLikeService {
         }
 
         String usersKey = LIKE_USERS + postId;
-        Long result = stringRedisTemplate.execute(
-                LIKE_SCRIPT,
-                List.of(usersKey),
-                userId.toString());
-        if (result == null) {
+        Long added = stringRedisTemplate.opsForSet().add(usersKey, userId.toString());
+        if (added == null) {
             throw new BizException(ErrorCode.INTERNAL_ERROR, "点赞失败");
         }
-        if (result == -1) {
+        if (added == 0) {
             throw new BizException(ErrorCode.CONFLICT, "已点赞");
         }
 
