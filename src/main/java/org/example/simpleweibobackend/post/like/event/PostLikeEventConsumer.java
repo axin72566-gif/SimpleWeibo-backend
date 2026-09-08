@@ -33,12 +33,7 @@ public class PostLikeEventConsumer {
         if (events.isEmpty()) {
             return;
         }
-
-        try {
-            transactionTemplate.executeWithoutResult(status -> persist(events));
-        } catch (Exception e) {
-            log.error("点赞事件批量处理失败, batchSize={}", events.size(), e);
-        }
+        transactionTemplate.executeWithoutResult(status -> persist(events));
     }
 
     private void persist(List<PostLikeEvent> events) {

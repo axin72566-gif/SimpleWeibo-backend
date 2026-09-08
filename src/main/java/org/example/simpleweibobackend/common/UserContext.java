@@ -5,7 +5,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * 开发联调用的用户身份，由调用方通过请求头指定，不代表已认证用户。
+ * 开发联调用的用户身份，由调用方通过请求头指定。
  */
 public final class UserContext {
 
