@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.post.like;
+package org.example.simpleweibobackend.post.like.mq;
 
 import lombok.*;
 

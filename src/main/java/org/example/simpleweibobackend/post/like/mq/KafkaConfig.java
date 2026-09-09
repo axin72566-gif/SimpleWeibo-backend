@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.post.like;
+package org.example.simpleweibobackend.post.like.mq;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.kafka.config.TopicBuilder;

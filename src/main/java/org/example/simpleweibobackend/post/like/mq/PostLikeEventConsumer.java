@@ -1,10 +1,12 @@
-package org.example.simpleweibobackend.post.like;
+package org.example.simpleweibobackend.post.like.mq;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
+import org.example.simpleweibobackend.post.like.PostLike;
+import org.example.simpleweibobackend.post.like.PostLikeMapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

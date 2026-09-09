@@ -7,6 +7,7 @@ import org.example.simpleweibobackend.common.UserContext;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
+import org.example.simpleweibobackend.post.like.mq.PostLikeEvent;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
