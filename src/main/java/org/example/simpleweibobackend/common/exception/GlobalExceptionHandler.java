@@ -3,6 +3,7 @@ package org.example.simpleweibobackend.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.Result;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,14 +12,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BizException.class)
-    public Result<Void> handleBizException(BizException e) {
+    public ResponseEntity<Result<Void>> handleBizException(BizException e) {
         log.warn("业务异常: {}", e.getMessage());
-        return Result.fail(e.getCode(), e.getMessage());
+        return ResponseEntity.status(e.getCode())
+                .body(Result.fail(e.getCode(), e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    public Result<Void> handleException(Exception e) {
+    public ResponseEntity<Result<Void>> handleException(Exception e) {
         log.error("系统异常", e);
-        return Result.fail(ErrorCode.INTERNAL_ERROR);
+        return ResponseEntity.status(ErrorCode.INTERNAL_ERROR.getCode())
+                .body(Result.fail(ErrorCode.INTERNAL_ERROR));
     }
 }
