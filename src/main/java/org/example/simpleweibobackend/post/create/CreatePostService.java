@@ -1,7 +1,6 @@
 package org.example.simpleweibobackend.post.create;
 
 import lombok.RequiredArgsConstructor;
-import org.example.simpleweibobackend.common.UserContext;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.PostVO;
@@ -13,8 +12,7 @@ public class CreatePostService {
 
     private final PostMapper postMapper;
 
-    public PostVO createPost(CreatePostRequest request) {
-        Long userId = UserContext.getUserId();
+    public PostVO createPost(CreatePostRequest request, Long userId) {
         Post post = new Post();
         post.setUserId(userId);
         post.setTitle(request.getTitle());
