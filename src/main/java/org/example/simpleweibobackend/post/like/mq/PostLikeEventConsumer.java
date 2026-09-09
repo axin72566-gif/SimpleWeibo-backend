@@ -31,10 +31,6 @@ public class PostLikeEventConsumer {
                 .map(message -> JSONUtil.toBean(message, PostLikeEvent.class))
                 .toList();
 
-        persist(events);
-    }
-
-    private void persist(List<PostLikeEvent> events) {
         List<PostLike> postLikes = events.stream()
                 .map(event -> {
                     PostLike postLike = new PostLike();
