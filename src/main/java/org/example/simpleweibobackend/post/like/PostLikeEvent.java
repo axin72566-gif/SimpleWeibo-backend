@@ -1,10 +1,10 @@
-package org.example.simpleweibobackend.post.like.event;
+package org.example.simpleweibobackend.post.like;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PostLikeEvent {
 
     /**

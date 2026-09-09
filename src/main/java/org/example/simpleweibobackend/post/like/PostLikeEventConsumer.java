@@ -1,43 +1,35 @@
-package org.example.simpleweibobackend.post.like.event;
+package org.example.simpleweibobackend.post.like;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
-import org.example.simpleweibobackend.post.like.PostLike;
-import org.example.simpleweibobackend.post.like.PostLikeMapper;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class PostLikeEventConsumer {
 
     private static final int BATCH_SIZE = 500;
 
-    private final PostLikeEventQueue postLikeEventQueue;
     private final PostLikeMapper postLikeMapper;
     private final PostMapper postMapper;
-    private final TransactionTemplate transactionTemplate;
 
-    @Scheduled(fixedDelay = 100)
-    public void consume() {
-        List<PostLikeEvent> events = postLikeEventQueue.drain(BATCH_SIZE);
-        if (events.isEmpty()) {
-            return;
-        }
-        try {
-            transactionTemplate.executeWithoutResult(status -> persist(events));
-        } catch (Exception e) {
-            log.error("点赞事件批量处理失败, batchSize={}", events.size(), e);
-        }
+    @KafkaListener(topics = "like-topic", groupId = "post-like-persistence", batch = "true")
+    @Transactional
+    public void consume(List<String> messages) {
+        List<PostLikeEvent> events = messages.stream()
+                .map(message -> JSONUtil.toBean(message, PostLikeEvent.class))
+                .toList();
+
+        persist(events);
     }
 
     private void persist(List<PostLikeEvent> events) {
@@ -54,12 +46,9 @@ public class PostLikeEventConsumer {
         Map<Long, Long> increments = events.stream()
                 .collect(Collectors.groupingBy(PostLikeEvent::getPostId, Collectors.counting()));
         for (Map.Entry<Long, Long> entry : increments.entrySet()) {
-            int updated = postMapper.update(null, new LambdaUpdateWrapper<Post>()
+            postMapper.update(null, new LambdaUpdateWrapper<Post>()
                     .eq(Post::getId, entry.getKey())
                     .setIncrBy(Post::getLikeCount, entry.getValue()));
-            if (updated != 1) {
-                throw new IllegalStateException("更新帖子点赞数失败, postId=" + entry.getKey());
-            }
         }
     }
 }
