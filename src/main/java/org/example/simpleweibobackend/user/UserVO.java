@@ -1,12 +1,11 @@
-package org.example.simpleweibobackend.user.register;
+package org.example.simpleweibobackend.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.simpleweibobackend.user.User;
 
 @Data
 @AllArgsConstructor
-public class RegisterVO {
+public class UserVO {
 
     /**
      * 用户ID
@@ -23,7 +22,7 @@ public class RegisterVO {
      */
     private String nickname;
 
-    public static RegisterVO from(User user) {
-        return new RegisterVO(user.getId(), user.getUsername(), user.getNickname());
+    public static UserVO from(User user) {
+        return new UserVO(user.getId(), user.getUsername(), user.getNickname());
     }
 }

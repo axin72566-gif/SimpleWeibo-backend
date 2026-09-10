@@ -6,6 +6,7 @@ import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.user.User;
 import org.example.simpleweibobackend.user.UserMapper;
+import org.example.simpleweibobackend.user.UserVO;
 import org.springframework.data.redis.core.script.DigestUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class RegisterService {
 
     private final UserMapper userMapper;
 
-    public RegisterVO register(RegisterRequest request) {
+    public UserVO register(RegisterRequest request) {
         boolean exists = userMapper.exists(new QueryWrapper<User>()
                 .eq("username", request.getUsername()));
         if (exists) {
@@ -34,6 +35,6 @@ public class RegisterService {
         user.setNickname(nickname);
         userMapper.insert(user);
 
-        return RegisterVO.from(user);
+        return UserVO.from(user);
     }
 }
