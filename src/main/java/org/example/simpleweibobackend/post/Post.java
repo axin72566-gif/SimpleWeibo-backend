@@ -25,4 +25,9 @@ public class Post extends BaseEntity {
      */
     private String content;
 
+    /**
+     * 访问量
+     */
+    private Long viewCount = 0L;
+
 }
