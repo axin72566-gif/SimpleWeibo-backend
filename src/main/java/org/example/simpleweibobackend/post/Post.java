@@ -25,8 +25,4 @@ public class Post extends BaseEntity {
      */
     private String content;
 
-    /**
-     * 点赞数
-     */
-    private Long likeCount = 0L;
 }
