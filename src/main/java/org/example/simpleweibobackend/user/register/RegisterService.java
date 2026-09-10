@@ -1,16 +1,12 @@
 package org.example.simpleweibobackend.user.register;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
-import org.example.simpleweibobackend.common.ErrorCode;
-import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.user.User;
 import org.example.simpleweibobackend.user.UserMapper;
 import org.example.simpleweibobackend.user.UserVO;
 import org.springframework.data.redis.core.script.DigestUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,20 +17,11 @@ public class RegisterService {
     private final UserMapper userMapper;
 
     public UserVO register(RegisterRequest request) {
-        boolean exists = userMapper.exists(new QueryWrapper<User>()
-                .eq("username", request.getUsername()));
-        if (exists) {
-            throw new BizException(ErrorCode.CONFLICT, "用户名已存在");
-        }
-
-        String nickname = "user_" + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(DigestUtils.sha1DigestAsHex(request.getPassword() + SALT));
-        user.setNickname(nickname);
+        user.setNickname("user_" + RandomUtil.randomString(6));
         userMapper.insert(user);
-
         return UserVO.from(user);
     }
 }
