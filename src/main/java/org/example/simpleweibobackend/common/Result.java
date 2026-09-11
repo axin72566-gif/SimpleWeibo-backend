@@ -17,10 +17,6 @@ public class Result<T> {
         this.data = data;
     }
 
-    public static <T> Result<T> success() {
-        return new Result<>(ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMessage(), null);
-    }
-
     public static <T> Result<T> success(T data) {
         return new Result<>(ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMessage(), data);
     }

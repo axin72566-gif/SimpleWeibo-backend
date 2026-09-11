@@ -13,12 +13,15 @@ import java.util.List;
 public interface PostMapper extends BaseMapper<Post> {
 
     @Select("""
-            SELECT id, user_id, title, content, view_count, create_time, update_time
+            SELECT *
             FROM post
             WHERE create_time >= #{startTime} AND create_time <= #{endTime}
+            ORDER BY create_time DESC, id DESC
+            LIMIT #{limit}
             """)
     List<Post> selectPostsCreatedBetween(@Param("startTime") LocalDateTime startTime,
-                                         @Param("endTime") LocalDateTime endTime);
+                                         @Param("endTime") LocalDateTime endTime,
+                                         @Param("limit") int limit);
 
     @Update("""
             UPDATE post

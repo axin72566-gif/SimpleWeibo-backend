@@ -20,9 +20,7 @@ public class PostHotService {
 
     public List<PostVO> getHotPosts() {
         List<Post> recallPosts = hotPostRecaller.recall();
-
         List<ScoredPost> scoredPosts = hotPostCalculator.calculate(recallPosts);
-
         List<Post> hotPosts = hotPostRanker.rank(scoredPosts);
 
         return hotPosts.stream()

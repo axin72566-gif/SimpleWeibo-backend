@@ -16,6 +16,7 @@ import java.util.List;
 public class DefaultHotPostRecaller implements HotPostRecaller {
 
     private static final int RECALL_DAYS = 7;
+    private static final int RECALL_LIMIT = 1000;
 
     private final PostMapper postMapper;
 
@@ -23,6 +24,6 @@ public class DefaultHotPostRecaller implements HotPostRecaller {
     public List<Post> recall() {
         LocalDateTime endTime = LocalDateTime.now();
         LocalDateTime startTime = endTime.minusDays(RECALL_DAYS);
-        return postMapper.selectPostsCreatedBetween(startTime, endTime);
+        return postMapper.selectPostsCreatedBetween(startTime, endTime, RECALL_LIMIT);
     }
 }
