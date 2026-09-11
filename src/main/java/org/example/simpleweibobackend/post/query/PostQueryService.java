@@ -17,14 +17,14 @@ public class PostQueryService {
 
     @Transactional
     public PostVO getPostById(Long id) {
-        Post post = postMapper.selectById(id);
-        if (post == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
-        }
-
         int viewCount = postMapper.incrementViewCount(id);
         if (viewCount == 0) {
             throw new BizException(ErrorCode.INTERNAL_ERROR, "更新帖子视图次数失败");
+        }
+
+        Post post = postMapper.selectById(id);
+        if (post == null) {
+            throw new BizException(ErrorCode.NOT_FOUND, "帖子不存在");
         }
         return PostVO.from(post);
     }
