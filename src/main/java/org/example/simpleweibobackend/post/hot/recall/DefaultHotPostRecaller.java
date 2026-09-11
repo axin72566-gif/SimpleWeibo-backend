@@ -5,20 +5,24 @@ import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 按请求中的时间范围召回微博。
+ * 召回最近七天内发布的微博。
  */
 @Component
 @RequiredArgsConstructor
 public class DefaultHotPostRecaller implements HotPostRecaller {
 
+    private static final int RECALL_DAYS = 7;
+
     private final PostMapper postMapper;
 
     @Override
-    public List<Post> recall(RecallRequest request) {
-        return postMapper.selectPostsCreatedBetween(
-                request.getStartTime(), request.getEndTime());
+    public List<Post> recall() {
+        LocalDateTime endTime = LocalDateTime.now();
+        LocalDateTime startTime = endTime.minusDays(RECALL_DAYS);
+        return postMapper.selectPostsCreatedBetween(startTime, endTime);
     }
 }

@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface HotPostRecaller {
 
-    List<Post> recall(RecallRequest request);
+    List<Post> recall();
 }

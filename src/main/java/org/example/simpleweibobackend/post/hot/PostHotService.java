@@ -6,7 +6,6 @@ import org.example.simpleweibobackend.post.PostVO;
 import org.example.simpleweibobackend.post.hot.calculation.HotPostCalculator;
 import org.example.simpleweibobackend.post.hot.ranking.HotPostRanker;
 import org.example.simpleweibobackend.post.hot.recall.HotPostRecaller;
-import org.example.simpleweibobackend.post.hot.recall.RecallRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class PostHotService {
     private final HotPostRanker hotPostRanker;
 
     public List<PostVO> getHotPosts() {
-        List<Post> recallPosts = hotPostRecaller.recall(new RecallRequest());
+        List<Post> recallPosts = hotPostRecaller.recall();
 
         List<ScoredPost> scoredPosts = hotPostCalculator.calculate(recallPosts);
 
