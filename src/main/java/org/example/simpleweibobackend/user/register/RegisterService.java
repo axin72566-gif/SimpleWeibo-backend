@@ -17,10 +17,11 @@ public class RegisterService {
     private final UserMapper userMapper;
 
     public UserVO register(RegisterRequest request) {
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(DigestUtils.sha1DigestAsHex(request.getPassword() + SALT));
-        user.setNickname("user_" + RandomUtil.randomString(6));
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(DigestUtils.sha1DigestAsHex(request.getPassword() + SALT))
+                .nickname("user_" + RandomUtil.randomString(6))
+                .build();
         userMapper.insert(user);
         return UserVO.from(user);
     }
