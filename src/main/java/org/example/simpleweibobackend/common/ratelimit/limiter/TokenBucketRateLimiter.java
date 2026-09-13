@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.common.ratelimit.limiter;
 
+import org.example.simpleweibobackend.common.ratelimit.RateLimitAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class TokenBucketRateLimiter implements RateLimiter {
+
+    @Override
+    public RateLimitAlgorithm algorithm() {
+        return RateLimitAlgorithm.TOKEN_BUCKET;
+    }
 
     /**
      * 每个 key 一个独立的令牌桶

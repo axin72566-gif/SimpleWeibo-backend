@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.common.ratelimit.limiter;
 
+import org.example.simpleweibobackend.common.ratelimit.RateLimitAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayDeque;
@@ -13,6 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class SlidingWindowRateLimiter implements RateLimiter {
+
+    @Override
+    public RateLimitAlgorithm algorithm() {
+        return RateLimitAlgorithm.SLIDING_WINDOW;
+    }
 
     /**
      * 每个 key 一个时间戳队列:队头是最老请求,队尾是最新请求

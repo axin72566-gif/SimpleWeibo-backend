@@ -29,33 +29,18 @@ public class RateLimitAspect {
      */
     private static final String USER_ID_HEADER = "X-User-Id";
 
-    private final FixedWindowRateLimiter fixedWindowRateLimiter;
-    private final SlidingWindowRateLimiter slidingWindowRateLimiter;
-    private final TokenBucketRateLimiter tokenBucketRateLimiter;
-    private final LeakyBucketRateLimiter leakyBucketRateLimiter;
+    private final RateLimiterRegistry registry;
 
     @Around("@annotation(rateLimit)")
     public Object around(ProceedingJoinPoint joinPoint, RateLimit rateLimit) throws Throwable {
         String key = buildKey(joinPoint, rateLimit);
-        boolean allowed = resolveLimiter(rateLimit.algorithm())
+        boolean allowed = registry.get(rateLimit.algorithm())
                 .tryAcquire(key, rateLimit.limit(), rateLimit.window() * 1000L);
         if (!allowed) {
             log.warn("触发限流, key: {}, algorithm: {}", key, rateLimit.algorithm());
             throw new BizException(ErrorCode.RATE_LIMITED, rateLimit.message());
         }
         return joinPoint.proceed();
-    }
-
-    /**
-     * 按注解声明的算法路由到对应的限流器实现
-     */
-    private RateLimiter resolveLimiter(RateLimitAlgorithm algorithm) {
-        return switch (algorithm) {
-            case FIXED_WINDOW -> fixedWindowRateLimiter;
-            case SLIDING_WINDOW -> slidingWindowRateLimiter;
-            case TOKEN_BUCKET -> tokenBucketRateLimiter;
-            case LEAKY_BUCKET -> leakyBucketRateLimiter;
-        };
     }
 
     /**

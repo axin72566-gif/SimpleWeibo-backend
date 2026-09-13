@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.common.ratelimit.limiter;
 
+import org.example.simpleweibobackend.common.ratelimit.RateLimitAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,6 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class FixedWindowRateLimiter implements RateLimiter {
+
+    @Override
+    public RateLimitAlgorithm algorithm() {
+        return RateLimitAlgorithm.FIXED_WINDOW;
+    }
 
     /**
      * 每个 key 一份独立的计数状态
