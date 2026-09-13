@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 /**
  * MyBatis-Plus 字段自动填充器:配合 {@link org.example.simpleweibobackend.common.BaseEntity} 的
- * @TableField(fill = ...) 注解,插入/更新时自动写入 createTime/updateTime,
+ * TableField(fill = Fill.INSERT_UPDATE) 注解,插入/更新时自动写入 createTime/updateTime,
  * 业务代码无需手动赋值
  */
 @Component
