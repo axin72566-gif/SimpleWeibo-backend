@@ -18,7 +18,7 @@ public interface PostMapper extends BaseMapper<Post> {
             ORDER BY create_time DESC, id DESC
             LIMIT #{limit}
             """)
-    List<Post> selectPostsCreatedBetween(@Param("startTime") LocalDateTime startTime,
+    List<Post> selectPreHostPosts(@Param("startTime") LocalDateTime startTime,
                                          @Param("endTime") LocalDateTime endTime,
                                          @Param("limit") int limit);
 }

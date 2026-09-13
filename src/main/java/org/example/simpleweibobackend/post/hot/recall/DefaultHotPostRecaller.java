@@ -24,6 +24,6 @@ public class DefaultHotPostRecaller implements HotPostRecaller {
     public List<Post> recall() {
         LocalDateTime endTime = LocalDateTime.now();
         LocalDateTime startTime = endTime.minusDays(RECALL_DAYS);
-        return postMapper.selectPostsCreatedBetween(startTime, endTime, RECALL_LIMIT);
+        return postMapper.selectPreHostPosts(startTime, endTime, RECALL_LIMIT);
     }
 }
