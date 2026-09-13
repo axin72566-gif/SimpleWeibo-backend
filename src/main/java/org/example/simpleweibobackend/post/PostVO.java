@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 帖子视图对象
+ */
 @Data
 @AllArgsConstructor
 public class PostVO {
@@ -39,6 +42,9 @@ public class PostVO {
      */
     private LocalDateTime createTime;
 
+    /**
+     * 由帖子实体转换为视图对象
+     */
     public static PostVO from(Post post) {
         return new PostVO(post.getId(), post.getUserId(),
                 post.getTitle(), post.getContent(), post.getViewCount(), post.getCreateTime());

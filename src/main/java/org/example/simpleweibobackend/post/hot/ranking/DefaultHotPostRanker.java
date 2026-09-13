@@ -13,8 +13,14 @@ import java.util.List;
 @Component
 public class DefaultHotPostRanker implements HotPostRanker {
 
+    /**
+     * 热榜展示条数
+     */
     private static final int HOT_POST_LIMIT = 10;
 
+    /**
+     * 按热度分从高到低排序并截取前十
+     */
     @Override
     public List<Post> rank(List<ScoredPost> scoredPosts) {
         return scoredPosts.stream()

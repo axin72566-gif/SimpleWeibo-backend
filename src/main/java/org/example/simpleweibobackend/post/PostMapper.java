@@ -8,9 +8,19 @@ import org.apache.ibatis.annotations.Select;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 帖子表 Mapper
+ */
 @Mapper
 public interface PostMapper extends BaseMapper<Post> {
 
+    /**
+     * 查询指定发布时间段内的帖子,按发布时间倒序,供热榜召回层使用
+     *
+     * @param startTime 起始时间(含)
+     * @param endTime   截止时间(含)
+     * @param limit     最多返回条数
+     */
     @Select("""
             SELECT *
             FROM post

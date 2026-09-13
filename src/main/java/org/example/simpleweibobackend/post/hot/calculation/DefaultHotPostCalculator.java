@@ -15,8 +15,17 @@ import java.util.List;
 @Component
 public class DefaultHotPostCalculator implements HotPostCalculator {
 
+    /**
+     * 一天的秒数,用于把帖子年龄折算成天数
+     */
     private static final double SECONDS_PER_DAY = 24 * 60 * 60.0;
 
+    /**
+     * 对候选帖子逐条计算热度分
+     *
+     * @param recallPosts 召回层输出的候选帖子
+     * @return 携带热度分的帖子列表,顺序与输入一致
+     */
     @Override
     public List<ScoredPost> calculate(List<Post> recallPosts) {
         List<ScoredPost> scoredPosts = new ArrayList<>(recallPosts.size());

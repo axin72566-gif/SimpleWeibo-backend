@@ -3,6 +3,10 @@ package org.example.simpleweibobackend.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 全局错误码枚举:统一业务异常与 HTTP 状态码,
+ * {@link Result} 与 {@link org.example.simpleweibobackend.common.exception.GlobalExceptionHandler} 使用
+ */
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
@@ -12,10 +16,18 @@ public enum ErrorCode {
     NOT_FOUND(404, "资源不存在"),
     CONFLICT(409, "资源已存在"),
     INTERNAL_ERROR(500, "服务器内部错误"),
+    /** 帖子审核责任链裁决拒绝 */
     AUDIT_REJECTED(1001, "内容未通过审核"),
+    /** 限流组件拒绝请求 */
     RATE_LIMITED(429, "请求过于频繁");
 
+    /**
+     * 错误码,同时作为 HTTP 响应状态码
+     */
     private final Integer code;
 
+    /**
+     * 对外展示的错误信息
+     */
     private final String message;
 }
