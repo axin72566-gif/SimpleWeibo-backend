@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,12 +21,4 @@ public interface PostMapper extends BaseMapper<Post> {
     List<Post> selectPostsCreatedBetween(@Param("startTime") LocalDateTime startTime,
                                          @Param("endTime") LocalDateTime endTime,
                                          @Param("limit") int limit);
-
-    @Update("""
-            UPDATE post
-            SET view_count = view_count + 1,
-                update_time = update_time
-            WHERE id = #{id}
-            """)
-    int incrementViewCount(@Param("id") Long id);
 }

@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.post.query;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
@@ -17,8 +18,10 @@ public class PostQueryService {
 
     @Transactional
     public PostVO getPostById(Long id) {
-        int viewCount = postMapper.incrementViewCount(id);
-        if (viewCount == 0) {
+        int updated = postMapper.update(null, new LambdaUpdateWrapper<Post>()
+                .eq(Post::getId, id)
+                .setSql("view_count = view_count + 1, update_time = update_time"));
+        if (updated == 0) {
             throw new BizException(ErrorCode.INTERNAL_ERROR, "更新帖子视图次数失败");
         }
 
