@@ -27,7 +27,7 @@ public class BaseEntity {
     private Long id;
 
     /**
-     * 创建时间,插入时由 {@link MyMetaObjectHandlerConfig} 自动填充
+     * 创建时间,插入时自动填充
      */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
