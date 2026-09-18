@@ -59,8 +59,6 @@ mysql -h localhost -P 3305 -u root -p
 CREATE DATABASE IF NOT EXISTS simple_weibo
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE simple_weibo;
-SOURCE sql/user.sql;
-SOURCE sql/post.sql;
 ```
 
 SQL 文件仅负责建表，不包含建库或测试数据；建表语句不支持重复执行。项目未配置自动执行这些脚本，需要手动导入。
