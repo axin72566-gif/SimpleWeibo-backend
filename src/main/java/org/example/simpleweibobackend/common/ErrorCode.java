@@ -16,9 +16,7 @@ public enum ErrorCode {
     NOT_FOUND(404, "资源不存在"),
     CONFLICT(409, "资源已存在"),
     INTERNAL_ERROR(500, "服务器内部错误"),
-    /** 帖子审核责任链裁决拒绝 */
     AUDIT_REJECTED(1001, "内容未通过审核"),
-    /** 限流组件拒绝请求 */
     RATE_LIMITED(429, "请求过于频繁");
 
     /**
