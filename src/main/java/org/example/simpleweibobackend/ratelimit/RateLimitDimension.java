@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.common.ratelimit;
+package org.example.simpleweibobackend.ratelimit;
 
 /**
  * 限流维度,决定限流 key 中拼接的对象标识

@@ -1,6 +1,6 @@
-package org.example.simpleweibobackend.common.ratelimit.limiter;
+package org.example.simpleweibobackend.ratelimit.limiter;
 
-import org.example.simpleweibobackend.common.ratelimit.RateLimitAlgorithm;
+import org.example.simpleweibobackend.ratelimit.RateLimitAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;

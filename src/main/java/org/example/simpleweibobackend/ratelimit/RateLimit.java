@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.common.ratelimit;
+package org.example.simpleweibobackend.ratelimit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

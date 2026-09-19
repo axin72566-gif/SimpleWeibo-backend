@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.common.ratelimit;
+package org.example.simpleweibobackend.ratelimit;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
-import org.example.simpleweibobackend.common.ratelimit.limiter.*;
+import org.example.simpleweibobackend.ratelimit.limiter.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

@@ -1,10 +1,10 @@
-package org.example.simpleweibobackend.common.ratelimit.limiter;
+package org.example.simpleweibobackend.ratelimit.limiter;
 
-import org.example.simpleweibobackend.common.ratelimit.RateLimitAlgorithm;
+import org.example.simpleweibobackend.ratelimit.RateLimitAlgorithm;
 
 /**
  * 限流器统一接口,所有限流算法都实现此方法。
- * 实现类需声明自己支持的算法,由 {@link org.example.simpleweibobackend.common.ratelimit.RateLimiterRegistry} 自动收集
+ * 实现类需声明自己支持的算法,由 {@link org.example.simpleweibobackend.ratelimit.RateLimiterRegistry} 自动收集
  */
 public interface RateLimiter {
 

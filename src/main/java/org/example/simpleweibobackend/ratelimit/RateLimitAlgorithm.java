@@ -1,6 +1,6 @@
-package org.example.simpleweibobackend.common.ratelimit;
+package org.example.simpleweibobackend.ratelimit;
 
-import org.example.simpleweibobackend.common.ratelimit.limiter.RateLimiter;
+import org.example.simpleweibobackend.ratelimit.limiter.RateLimiter;
 
 /**
  * 限流算法类型,对应 {@link RateLimiter} 的四种实现
