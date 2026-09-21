@@ -11,11 +11,6 @@ import lombok.Data;
 public class AuditContext {
 
     /**
-     * 发帖人用户 ID,黑名单节点使用
-     */
-    private Long userId;
-
-    /**
      * 待审核的帖子标题
      */
     private String title;

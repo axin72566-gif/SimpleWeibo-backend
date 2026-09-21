@@ -29,7 +29,6 @@ public class CreatePostService {
      */
     public PostVO createPost(CreatePostRequest request, Long userId) {
         AuditContext auditContext = AuditContext.builder()
-                .userId(userId)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .build();
