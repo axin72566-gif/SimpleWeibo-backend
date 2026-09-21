@@ -1,7 +1,7 @@
-package org.example.simpleweibobackend.post.audit;
+package org.example.simpleweibobackend.post.create.audit;
 
 import lombok.RequiredArgsConstructor;
-import org.example.simpleweibobackend.post.audit.handler.PostAuditHandler;
+import org.example.simpleweibobackend.post.create.audit.handler.PostAuditHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

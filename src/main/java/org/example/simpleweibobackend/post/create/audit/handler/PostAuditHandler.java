@@ -1,6 +1,6 @@
-package org.example.simpleweibobackend.post.audit.handler;
+package org.example.simpleweibobackend.post.create.audit.handler;
 
-import org.example.simpleweibobackend.post.audit.AuditContext;
+import org.example.simpleweibobackend.post.create.audit.AuditContext;
 
 /**
  * 发帖审核责任链节点

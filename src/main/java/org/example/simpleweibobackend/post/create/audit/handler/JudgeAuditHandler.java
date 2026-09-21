@@ -1,8 +1,8 @@
-package org.example.simpleweibobackend.post.audit.handler;
+package org.example.simpleweibobackend.post.create.audit.handler;
 
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
-import org.example.simpleweibobackend.post.audit.AuditContext;
+import org.example.simpleweibobackend.post.create.audit.AuditContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 

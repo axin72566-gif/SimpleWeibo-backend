@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.PostVO;
-import org.example.simpleweibobackend.post.audit.AuditContext;
-import org.example.simpleweibobackend.post.audit.PostAuditChain;
+import org.example.simpleweibobackend.post.create.audit.AuditContext;
+import org.example.simpleweibobackend.post.create.audit.PostAuditChain;
 import org.springframework.stereotype.Service;
 
 /**

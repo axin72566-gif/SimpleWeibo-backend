@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.post.audit;
+package org.example.simpleweibobackend.post.create.audit;
 
 import lombok.Builder;
 import lombok.Data;
