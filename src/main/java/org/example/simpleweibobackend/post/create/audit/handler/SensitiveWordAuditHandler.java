@@ -14,11 +14,6 @@ import java.util.Set;
 public class SensitiveWordAuditHandler implements PostAuditHandler {
 
     /**
-     * 每命中一个敏感词累加的风险分
-     */
-    private static final Long SENSITIVE_WORD_SCORE = 100L;
-
-    /**
      * 敏感词库
      */
     private static final Set<String> SENSITIVE_WORDS = Set.of(
@@ -34,7 +29,7 @@ public class SensitiveWordAuditHandler implements PostAuditHandler {
         String text = context.getTitle() + context.getContent();
         for (String word : SENSITIVE_WORDS) {
             if (text.contains(word)) {
-                context.setRiskScore(context.getRiskScore() + SENSITIVE_WORD_SCORE);
+                context.setRiskScore(context.getRiskScore() + 100L);
             }
         }
     }
