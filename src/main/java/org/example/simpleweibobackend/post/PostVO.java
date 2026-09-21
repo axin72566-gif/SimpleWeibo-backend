@@ -33,11 +33,6 @@ public class PostVO {
     private String content;
 
     /**
-     * 访问量
-     */
-    private Long viewCount;
-
-    /**
      * 创建时间
      */
     private LocalDateTime createTime;
@@ -47,6 +42,6 @@ public class PostVO {
      */
     public static PostVO from(Post post) {
         return new PostVO(post.getId(), post.getUserId(),
-                post.getTitle(), post.getContent(), post.getViewCount(), post.getCreateTime());
+                post.getTitle(), post.getContent(), post.getCreateTime());
     }
 }

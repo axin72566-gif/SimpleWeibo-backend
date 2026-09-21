@@ -2,7 +2,6 @@ package org.example.simpleweibobackend.post;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -34,11 +33,5 @@ public class Post extends BaseEntity {
      * 帖子正文,最长 500 字符
      */
     private String content;
-
-    /**
-     * 浏览量,查看详情时数据库端原子自增
-     */
-    @Builder.Default
-    private Long viewCount = 0L;
 
 }

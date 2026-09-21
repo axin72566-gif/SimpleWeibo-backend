@@ -19,7 +19,7 @@ public class PostQueryController {
     private final PostQueryService postQueryService;
 
     /**
-     * 按帖子 ID 查询详情,浏览量自动 +1
+     * 按帖子 ID 查询详情
      *
      * @param id 帖子 ID
      * @return 帖子详情
