@@ -13,12 +13,14 @@ import org.springframework.stereotype.Component;
 @Order(9999)
 public class JudgeAuditHandler implements PostAuditHandler {
 
+    private static final Long RISK_THRESHOLD = 100L;
+
     /**
      * 裁决:风险总分达到阈值时抛出业务异常,发帖被拒绝
      */
     @Override
     public void handle(AuditContext context) {
-        if (context.getRiskScore() >= 100L) {
+        if (context.getRiskScore() >= RISK_THRESHOLD) {
             throw new BizException(ErrorCode.AUDIT_REJECTED, "内容存在风险，发帖被拒绝");
         }
     }

@@ -9,7 +9,17 @@ import lombok.Getter;
 public class Result<T> {
 
     /**
-     * 响应码,取值见 {@link ErrorCode},200 表示成功
+     * 成功业务码
+     */
+    private static final Integer SUCCESS_CODE = 200;
+
+    /**
+     * 成功响应信息
+     */
+    private static final String SUCCESS_MESSAGE = "成功";
+
+    /**
+     * 响应码,200 表示成功,失败取值见 {@link ErrorCode}
      */
     private final Integer code;
 
@@ -33,7 +43,7 @@ public class Result<T> {
      * 构建成功响应,data 为业务返回值
      */
     public static <T> Result<T> success(T data) {
-        return new Result<>(ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMessage(), data);
+        return new Result<>(SUCCESS_CODE, SUCCESS_MESSAGE, data);
     }
 
     /**
