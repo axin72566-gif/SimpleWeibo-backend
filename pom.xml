@@ -87,6 +87,12 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
+<!--        caffeine 本地缓存-->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
