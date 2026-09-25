@@ -19,14 +19,6 @@ public class CreatePostService {
 
     private final PostAuditChain postAuditChain;
 
-    /**
-     * 发布帖子:先构建审核上下文走责任链(拒绝则抛业务异常),
-     * 通过后插入帖子并返回视图对象
-     *
-     * @param request 帖子内容(标题 + 正文)
-     * @param userId  发布者用户 ID
-     * @return 发布成功的帖子信息
-     */
     public PostVO createPost(CreatePostRequest request, Long userId) {
         AuditContext auditContext = AuditContext.builder()
                 .title(request.getTitle())

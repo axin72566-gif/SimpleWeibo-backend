@@ -8,7 +8,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * 裁决节点：审核链最后一个节点，根据风险总分决定通过或拒绝。
+ * 审核链末位节点:按累计风险分裁决通过或拒绝
  */
 @Component
 @Order(9999)
@@ -16,9 +16,6 @@ public class JudgeAuditHandler implements PostAuditHandler {
 
     private static final Long RISK_THRESHOLD = 100L;
 
-    /**
-     * 裁决:风险总分达到阈值时抛出业务异常,发帖被拒绝
-     */
     @Override
     public void handle(AuditContext context) {
         if (context.getRiskScore() >= RISK_THRESHOLD) {

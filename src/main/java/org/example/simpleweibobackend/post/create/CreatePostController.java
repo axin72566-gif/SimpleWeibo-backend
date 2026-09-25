@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 发帖接口
- */
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
@@ -21,11 +18,7 @@ public class CreatePostController {
     private final CreatePostService createPostService;
 
     /**
-     * 发布新帖子,先经过审核责任链再入库
-     *
-     * @param request 帖子内容(标题 + 正文)
-     * @param userId  发布者用户 ID,由网关通过 X-User-Id 请求头传入
-     * @return 发布成功的帖子信息
+     * 发布新帖子,先经审核责任链再入库;userId 由网关通过 X-User-Id 头传入
      */
     @PostMapping
     public Result<PostVO> createPost(@Valid @RequestBody CreatePostRequest request,

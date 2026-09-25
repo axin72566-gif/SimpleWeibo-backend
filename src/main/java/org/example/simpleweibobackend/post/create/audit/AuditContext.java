@@ -10,18 +10,12 @@ import lombok.Data;
 @Builder
 public class AuditContext {
 
-    /**
-     * 待审核的帖子标题
-     */
     private String title;
 
-    /**
-     * 待审核的帖子正文
-     */
     private String content;
 
     /**
-     * 累计风险分,各审核节点按规则累加,裁决节点按阈值判定
+     * 各节点累加,裁决节点按阈值判定
      */
     @Builder.Default
     private Long riskScore = 0L;
