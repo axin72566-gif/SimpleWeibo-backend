@@ -1,11 +1,9 @@
-package org.example.simpleweibobackend.post.create.audit.handler;
+package org.example.simpleweibobackend.post.create.audit.handler.sensitiveword;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.post.create.audit.AuditContext;
-import org.example.simpleweibobackend.post.create.audit.handler.sensitiveword.SensitiveWord;
-import org.example.simpleweibobackend.post.create.audit.handler.sensitiveword.SensitiveWordDfa;
-import org.example.simpleweibobackend.post.create.audit.handler.sensitiveword.SensitiveWordMapper;
+import org.example.simpleweibobackend.post.create.audit.handler.PostAuditHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
