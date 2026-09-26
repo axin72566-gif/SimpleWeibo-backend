@@ -1,10 +1,13 @@
 package org.example.simpleweibobackend.post.create;
 
 import lombok.RequiredArgsConstructor;
+import org.example.simpleweibobackend.common.ErrorCode;
+import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.PostVO;
 import org.example.simpleweibobackend.post.create.audit.AuditContext;
+import org.example.simpleweibobackend.post.create.audit.AuditResultEnum;
 import org.example.simpleweibobackend.post.create.audit.PostAuditChain;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +29,21 @@ public class CreatePostService {
                 .build();
         postAuditChain.audit(auditContext);
 
-        Post post = Post.builder()
-                .userId(userId)
-                .title(request.getTitle())
-                .content(request.getContent())
-                .build();
-        postMapper.insert(post);
-        return PostVO.from(post);
+        AuditResultEnum result = auditContext.getResult();
+        switch (result) {
+            case REJECT ->
+                    throw new BizException(ErrorCode.AUDIT_REJECTED, String.join("；", auditContext.getReasons()));
+            case PASS, MANUAL_REVIEW -> {
+                Post post = Post.builder()
+                        .userId(userId)
+                        .title(request.getTitle())
+                        .content(request.getContent())
+                        .auditStatus(result.getCode())
+                        .build();
+                postMapper.insert(post);
+                return PostVO.from(post);
+            }
+        }
+        return null;
     }
 }

@@ -14,11 +14,12 @@ import java.util.stream.Collectors;
  * 敏感词审核节点:每次审核实时查表构建 DFA(改词即时生效),标题或正文命中任一敏感词即累加风险分
  */
 @Component
-@Order(1)
+@Order(0)
 @RequiredArgsConstructor
 public class SensitiveWordAuditHandler implements PostAuditHandler {
 
     private static final Long SENSITIVE_WORD_SCORE = 100L;
+    private static final String SENSITIVE_WORD_REASON = "标题或正文包含敏感词";
 
     private final SensitiveWordMapper sensitiveWordMapper;
 
@@ -31,6 +32,7 @@ public class SensitiveWordAuditHandler implements PostAuditHandler {
 
         if (dfa.containsAny(context.getTitle()) || dfa.containsAny(context.getContent())) {
             context.setRiskScore(context.getRiskScore() + SENSITIVE_WORD_SCORE);
+            context.getReasons().add(SENSITIVE_WORD_REASON);
         }
     }
 }

@@ -3,6 +3,9 @@ package org.example.simpleweibobackend.post.create.audit;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 审核上下文:责任链各节点共享的待审核信息与累计风险分
  */
@@ -19,5 +22,10 @@ public class AuditContext {
      */
     @Builder.Default
     private Long riskScore = 0L;
+
+    @Builder.Default
+    private List<String> reasons = new ArrayList<>();
+
+    private AuditResultEnum result;
 
 }
