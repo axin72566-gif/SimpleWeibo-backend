@@ -16,19 +16,15 @@ public class RemoteCheckHandler implements PostAuditHandler {
 
     @Override
     public void handle(AuditContext context) {
-        // 远程校验逻辑
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
+            long remoteRiskScore = RandomUtil.randomLong(0, 100);
+            if (remoteRiskScore >= 60) {
+                context.getReasons().add(REMOTE_CHECK_REASON);
+            }
+            context.setRiskScore(context.getRiskScore() + remoteRiskScore);
+        } catch (Exception e) {
             log.error("远程校验失败", e);
             context.setRiskScore(context.getRiskScore() + 10);
-            return;
         }
-
-        long remoteRiskScore = RandomUtil.randomLong(0, 100);
-        if (remoteRiskScore >= 60) {
-            context.getReasons().add(REMOTE_CHECK_REASON);
-        }
-        context.setRiskScore(context.getRiskScore() + remoteRiskScore);
     }
 }
