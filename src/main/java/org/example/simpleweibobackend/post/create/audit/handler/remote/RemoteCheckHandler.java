@@ -21,6 +21,7 @@ public class RemoteCheckHandler implements PostAuditHandler {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             log.error("远程校验失败", e);
+            return;
         }
 
         long remoteRiskScore = RandomUtil.randomLong(0, 100);

@@ -43,7 +43,7 @@ public class CreatePostService {
                 postMapper.insert(post);
                 return PostVO.from(post);
             }
+            default -> throw new IllegalArgumentException("未知的审核结果: " + result);
         }
-        return null;
     }
 }

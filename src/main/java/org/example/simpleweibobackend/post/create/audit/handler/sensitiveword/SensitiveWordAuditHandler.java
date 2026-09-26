@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SensitiveWordAuditHandler implements PostAuditHandler {
 
-    private static final Long SENSITIVE_WORD_SCORE = 100L;
+    private static final Long SENSITIVE_WORD_SCORE = 80L;
     private static final String SENSITIVE_WORD_REASON = "标题或正文包含敏感词";
 
     private final SensitiveWordMapper sensitiveWordMapper;
