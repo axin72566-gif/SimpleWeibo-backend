@@ -6,6 +6,7 @@ create table post
     title        varchar(100)                        not null comment '帖子标题',
     content      varchar(500)                        not null comment '帖子正文',
     audit_status int          default 2            null comment '审核状态:1-通过,2-人工审核中,3-拒绝',
+    audit_reason varchar(500)                       null comment '审核原因/拒绝理由',
     create_time  datetime default CURRENT_TIMESTAMP null comment '创建时间',
     update_time  datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间'
 )

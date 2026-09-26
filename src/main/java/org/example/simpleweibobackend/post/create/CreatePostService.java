@@ -30,21 +30,24 @@ public class CreatePostService {
         postAuditChain.audit(auditContext);
 
         AuditResultEnum result = auditContext.getResult();
+        String auditReason = String.join("；", auditContext.getReasons());
         switch (result) {
-            case REJECT -> throw new BizException(ErrorCode.AUDIT_REJECTED, String.join("；", auditContext.getReasons()));
+            case REJECT -> throw new BizException(ErrorCode.AUDIT_REJECTED, auditReason);
             case PASS, MANUAL_REVIEW -> {
-                return savePost(request, userId, result);
+                return savePost(request, userId, result, auditReason);
             }
-            default -> throw new IllegalArgumentException("未知的审核结果: " + result);
         }
+
+        return null;
     }
 
-    private PostVO savePost(CreatePostRequest request, Long userId, AuditResultEnum auditStatus) {
+    private PostVO savePost(CreatePostRequest request, Long userId, AuditResultEnum auditStatus, String auditReason) {
         Post post = Post.builder()
                 .userId(userId)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .auditStatus(auditStatus.getCode())
+                .auditReason(auditReason)
                 .build();
         postMapper.insert(post);
         return PostVO.from(post);

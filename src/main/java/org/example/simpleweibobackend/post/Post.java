@@ -24,4 +24,6 @@ public class Post extends BaseEntity {
 
     private Integer auditStatus;
 
+    private String auditReason;
+
 }

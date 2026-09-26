@@ -19,10 +19,12 @@ public class PostVO {
 
     private Integer auditStatus;
 
+    private String auditReason;
+
     private LocalDateTime createTime;
 
     public static PostVO from(Post post) {
         return new PostVO(post.getId(), post.getUserId(),
-                post.getTitle(), post.getContent(), post.getAuditStatus(), post.getCreateTime());
+                post.getTitle(), post.getContent(), post.getAuditStatus(), post.getAuditReason(), post.getCreateTime());
     }
 }
