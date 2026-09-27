@@ -11,6 +11,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
     BAD_REQUEST(400, 400, "请求参数错误"),
+    UNAUTHORIZED(401, 401, "未登录或登录已过期"),
     NOT_FOUND(404, 404, "资源不存在"),
     CONFLICT(409, 409, "资源已存在"),
     INTERNAL_ERROR(500, 500, "服务器内部错误"),

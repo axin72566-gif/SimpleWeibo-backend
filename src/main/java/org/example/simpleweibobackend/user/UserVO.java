@@ -3,6 +3,8 @@ package org.example.simpleweibobackend.user;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * 对外的脱敏用户信息,不含密码
  */
@@ -16,7 +18,9 @@ public class UserVO {
 
     private String nickname;
 
+    private LocalDateTime createTime;
+
     public static UserVO from(User user) {
-        return new UserVO(user.getId(), user.getUsername(), user.getNickname());
+        return new UserVO(user.getId(), user.getUsername(), user.getNickname(), user.getCreateTime());
     }
 }

@@ -19,7 +19,7 @@ public class User extends BaseEntity {
     private String username;
 
     /**
-     * 加盐 SHA1 摘要,不存明文
+     * BCrypt 摘要,不存明文
      */
     private String password;
 
