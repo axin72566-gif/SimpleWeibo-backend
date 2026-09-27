@@ -17,14 +17,10 @@ public class PostVO {
 
     private String content;
 
-    private Integer auditStatus;
-
-    private String auditReason;
-
     private LocalDateTime createTime;
 
     public static PostVO from(Post post) {
         return new PostVO(post.getId(), post.getUserId(),
-                post.getTitle(), post.getContent(), post.getAuditStatus(), post.getAuditReason(), post.getCreateTime());
+                post.getTitle(), post.getContent(), post.getCreateTime());
     }
 }

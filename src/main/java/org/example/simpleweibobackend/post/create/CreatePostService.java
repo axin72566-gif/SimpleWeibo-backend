@@ -1,18 +1,15 @@
 package org.example.simpleweibobackend.post.create;
 
 import lombok.RequiredArgsConstructor;
-import org.example.simpleweibobackend.common.ErrorCode;
-import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.PostVO;
 import org.example.simpleweibobackend.post.create.audit.AuditContext;
-import org.example.simpleweibobackend.post.create.audit.AuditResultEnum;
 import org.example.simpleweibobackend.post.create.audit.PostAuditChain;
 import org.springframework.stereotype.Service;
 
 /**
- * 发帖服务:审核通过后才落库
+ * 发帖服务:先过审核责任链,被拒则抛业务异常,走完即落库
  */
 @Service
 @RequiredArgsConstructor
@@ -29,23 +26,12 @@ public class CreatePostService {
                 .build();
         postAuditChain.audit(auditContext);
 
-        AuditResultEnum result = auditContext.getResult();
-        String auditReason = String.join("；", auditContext.getReasons());
-        switch (result) {
-            case REJECT -> throw new BizException(ErrorCode.AUDIT_REJECTED, auditReason);
-            case PASS, MANUAL_REVIEW -> {
-                Post post = Post.builder()
-                        .userId(userId)
-                        .title(request.getTitle())
-                        .content(request.getContent())
-                        .auditStatus(result.getCode())
-                        .auditReason(auditReason)
-                        .build();
-                postMapper.insert(post);
-                return PostVO.from(post);
-            }
-        }
-
-        return null;
+        Post post = Post.builder()
+                .userId(userId)
+                .title(request.getTitle())
+                .content(request.getContent())
+                .build();
+        postMapper.insert(post);
+        return PostVO.from(post);
     }
 }

@@ -26,6 +26,4 @@ public class AuditContext {
     @Builder.Default
     private List<String> reasons = new ArrayList<>();
 
-    private AuditResultEnum result;
-
 }
