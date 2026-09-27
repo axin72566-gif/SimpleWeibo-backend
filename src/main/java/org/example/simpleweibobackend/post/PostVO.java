@@ -17,10 +17,14 @@ public class PostVO {
 
     private String content;
 
+    private Long likeCount;
+
     private LocalDateTime createTime;
 
     public static PostVO from(Post post) {
         return new PostVO(post.getId(), post.getUserId(),
-                post.getTitle(), post.getContent(), post.getCreateTime());
+                post.getTitle(), post.getContent(),
+                post.getLikeCount() == null ? 0L : post.getLikeCount(),
+                post.getCreateTime());
     }
 }

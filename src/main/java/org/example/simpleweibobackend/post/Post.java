@@ -22,4 +22,6 @@ public class Post extends BaseEntity {
 
     private String content;
 
+    private Long likeCount;
+
 }
