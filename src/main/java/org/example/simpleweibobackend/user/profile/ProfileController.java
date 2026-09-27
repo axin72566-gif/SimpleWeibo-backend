@@ -26,7 +26,7 @@ public class ProfileController {
     public Result<UserVO> me() {
         User user = userMapper.selectById(UserContext.getUserId());
         if (user == null) {
-            throw new BizException(ErrorCode.NOT_FOUND, "用户不存在");
+            throw new BizException(ErrorCode.USER_NOT_FOUND);
         }
         return Result.success(UserVO.from(user));
     }

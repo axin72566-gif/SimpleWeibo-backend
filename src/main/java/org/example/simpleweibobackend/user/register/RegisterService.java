@@ -22,7 +22,7 @@ public class RegisterService {
         Long count = userMapper.selectCount(
                 new LambdaQueryWrapper<User>().eq(User::getUsername, request.getUsername()));
         if (count > 0) {
-            throw new BizException(ErrorCode.CONFLICT, "用户名已存在");
+            throw new BizException(ErrorCode.USERNAME_EXISTS);
         }
         User user = User.builder()
                 .username(request.getUsername())
@@ -34,7 +34,7 @@ public class RegisterService {
             userMapper.insert(user);
         } catch (DuplicateKeyException e) {
             // 查重后并发注册撞唯一索引的兜底
-            throw new BizException(ErrorCode.CONFLICT, "用户名已存在");
+            throw new BizException(ErrorCode.USERNAME_EXISTS);
         }
         return UserVO.from(user);
     }

@@ -25,7 +25,7 @@ public class LoginService {
                 new LambdaQueryWrapper<User>().eq(User::getUsername, request.getUsername()));
         // 用户不存在与密码错误返回同一提示,防止用户名枚举
         if (user == null || !BCrypt.checkpw(request.getPassword(), user.getPassword())) {
-            throw new BizException(ErrorCode.UNAUTHORIZED, "用户名或密码错误");
+            throw new BizException(ErrorCode.LOGIN_FAILED);
         }
         String token = IdUtil.fastSimpleUUID();
         stringRedisTemplate.opsForValue()

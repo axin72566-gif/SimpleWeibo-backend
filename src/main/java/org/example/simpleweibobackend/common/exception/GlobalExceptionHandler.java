@@ -44,9 +44,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = ex.getBindingResult().getFieldErrors().stream()
                 .findFirst()
                 .map(FieldError::getDefaultMessage)
-                .orElse(ErrorCode.BAD_REQUEST.getMessage());
+                .orElse(ErrorCode.PARAM_ERROR.getMessage());
         return ResponseEntity.status(status)
-                .body(Result.fail(ErrorCode.BAD_REQUEST.getCode(), message));
+                .body(Result.fail(ErrorCode.PARAM_ERROR.getCode(), message));
     }
 
     @Override

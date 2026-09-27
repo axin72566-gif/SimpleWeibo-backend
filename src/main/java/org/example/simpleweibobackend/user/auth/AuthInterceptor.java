@@ -32,7 +32,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String userId = token == null ? null
                 : stringRedisTemplate.opsForValue().get(UserContext.TOKEN_KEY_PREFIX + token);
         if (userId == null) {
-            throw new BizException(ErrorCode.UNAUTHORIZED, ErrorCode.UNAUTHORIZED.getMessage());
+            throw new BizException(ErrorCode.UNAUTHORIZED);
         }
         UserContext.set(Long.valueOf(userId), token);
         return true;
