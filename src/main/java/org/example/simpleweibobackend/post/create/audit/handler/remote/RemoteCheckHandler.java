@@ -22,8 +22,8 @@ public class RemoteCheckHandler implements PostAuditHandler {
             context.setRiskScore(context.getRiskScore() + remoteRiskScore);
         } catch (Exception e) {
             log.error("远程校验失败", e);
-            context.setRiskScore(context.getRiskScore() + 10);
             context.getReasons().add(REMOTE_CHECK_REASON);
+            context.setRiskScore(context.getRiskScore() + 10);
         }
     }
 }
