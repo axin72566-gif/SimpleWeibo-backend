@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.user.User;
@@ -12,6 +13,7 @@ import org.example.simpleweibobackend.user.UserVO;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RegisterService {
@@ -22,18 +24,18 @@ public class RegisterService {
         Long count = userMapper.selectCount(
                 new LambdaQueryWrapper<User>().eq(User::getUsername, request.getUsername()));
         if (count > 0) {
+            log.warn("用户名 {} 已存在", request.getUsername());
             throw new BizException(ErrorCode.USERNAME_EXISTS);
         }
         User user = User.builder()
                 .username(request.getUsername())
-                // BCrypt 随机加盐慢哈希,不存明文
                 .password(BCrypt.hashpw(request.getPassword()))
                 .nickname("user_" + RandomUtil.randomString(6))
                 .build();
         try {
             userMapper.insert(user);
         } catch (DuplicateKeyException e) {
-            // 查重后并发注册撞唯一索引的兜底
+            log.warn("并发注册撞唯一索引: username={}", request.getUsername(), e);
             throw new BizException(ErrorCode.USERNAME_EXISTS);
         }
         return UserVO.from(user);

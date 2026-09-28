@@ -2,7 +2,9 @@ package org.example.simpleweibobackend.user.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /** 登录态校验:token 有效则写入 UserContext,无效抛 401 */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
@@ -20,15 +23,22 @@ public class AuthInterceptor implements HandlerInterceptor {
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // CORS 预检请求不携带 Authorization,直接放行
+    public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         if (HttpMethod.OPTIONS.matches(request.getMethod())) {
             return true;
         }
-        String token = resolveToken(request);
-        String userId = token == null ? null
-                : stringRedisTemplate.opsForValue().get(UserContext.TOKEN_KEY_PREFIX + token);
+        String authorization = request.getHeader("Authorization");
+        String token = (authorization != null && authorization.startsWith(BEARER_PREFIX))
+                ? authorization.substring(BEARER_PREFIX.length()).trim() : null;
+        String userId = null;
+        try {
+            userId = (token == null || token.isEmpty()) ? null
+                    : stringRedisTemplate.opsForValue().get(UserContext.LOGIN_TOKEN + token);
+        } catch (Exception e) {
+            log.error("登录态校验失败: token 不存在或无效, token={}", token, e);
+        }
         if (userId == null) {
+            log.warn("登录态校验失败: token 不存在或无效");
             throw new BizException(ErrorCode.UNAUTHORIZED);
         }
         UserContext.set(Long.valueOf(userId), token);
@@ -36,17 +46,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                @NonNull Object handler, Exception ex) {
         UserContext.clear();
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
-            return null;
-        }
-        String token = authorization.substring(BEARER_PREFIX.length()).trim();
-        return token.isEmpty() ? null : token;
     }
 }

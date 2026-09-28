@@ -6,7 +6,7 @@ import java.time.Duration;
 public final class UserContext {
 
     /** 登录态 key 前缀,实际 key = 前缀 + token */
-    public static final String TOKEN_KEY_PREFIX = "simpleweibo:login:token:";
+    public static final String LOGIN_TOKEN = "user:login:token:";
 
     public static final Duration TOKEN_TTL = Duration.ofDays(7);
 

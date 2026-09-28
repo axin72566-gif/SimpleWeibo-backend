@@ -1,6 +1,8 @@
 package org.example.simpleweibobackend.post.create;
 
 import lombok.RequiredArgsConstructor;
+import org.example.simpleweibobackend.common.ErrorCode;
+import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.PostVO;
@@ -31,7 +33,10 @@ public class CreatePostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .build();
-        postMapper.insert(post);
+        int insert = postMapper.insert(post);
+        if (insert != 1) {
+            throw new BizException(ErrorCode.INTERNAL_ERROR, "发帖失败, 数据库操作失败");
+        }
         return PostVO.from(post);
     }
 }
