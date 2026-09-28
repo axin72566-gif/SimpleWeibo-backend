@@ -28,7 +28,7 @@ public class PostLikeConsumer {
     private final PostLikeMapper postLikeMapper;
 
     /** 批量落库:关系表插入几行,like_count 就加几 */
-    @KafkaListener(topics = "post-likes", groupId = "post-likes-group", batch = "true")
+    @KafkaListener(topics = PostLikeTopic.TOPIC, groupId = "post-likes-group", batch = "true")
     @Transactional(rollbackFor = Exception.class)
     public void onLikeEvent(List<ConsumerRecord<String, String>> records) {
         // 按帖子聚合本批事件

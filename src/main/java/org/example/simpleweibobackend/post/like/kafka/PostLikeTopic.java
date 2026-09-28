@@ -9,9 +9,11 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class PostLikeTopic {
 
+    public static final String TOPIC = "post-likes";
+
     @Bean
     public NewTopic likeTopic() {
-        return TopicBuilder.name("post-likes")
+        return TopicBuilder.name(TOPIC)
                 .partitions(3)
                 .replicas(1)
                 .build();

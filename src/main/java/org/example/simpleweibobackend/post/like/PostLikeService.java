@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/** 点赞服务:Lua 原子 SADD + INCR,新增点赞发 Kafka 事件异步落库 */
+/** 点赞服务:Lua 原子 SADD + INCR,新增点赞同步发 Kafka 事件异步落库;发送失败回滚 Redis,保证不产生脏数据 */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,6 +27,14 @@ public class PostLikeService {
     private static final RedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
             if redis.call('SADD', KEYS[1], ARGV[1]) == 1 then
                 return redis.call('INCR', KEYS[2])
+            end
+            return nil
+            """, Long.class);
+
+    /** 发送失败时的回滚:SREM 成功才 DECR,与点赞脚本对称,防止重复回滚导致多减 */
+    private static final RedisScript<Long> UNLIKE_ROLLBACK_SCRIPT = new DefaultRedisScript<>("""
+            if redis.call('SREM', KEYS[1], ARGV[1]) == 1 then
+                return redis.call('DECR', KEYS[2])
             end
             return nil
             """, Long.class);
@@ -56,7 +64,19 @@ public class PostLikeService {
             throw new BizException(ErrorCode.REPEAT_LIKE, "请勿重复点赞");
         }
 
-        postLikePublisher.publish(new PostLikeEvent(postId, userId));
+        try {
+            postLikePublisher.publish(new PostLikeEvent(postId, userId));
+        } catch (Exception e) {
+            log.error("点赞事件发送失败,回滚 Redis: userId={}, postId={}", userId, postId, e);
+            try {
+                stringRedisTemplate.execute(UNLIKE_ROLLBACK_SCRIPT,
+                        List.of(POST_LIKE_USERS + postId, POST_LIKE_COUNT + postId),
+                        String.valueOf(userId));
+            } catch (Exception re) {
+                log.error("Redis 回滚失败,计数存在漂移,待对账修复: userId={}, postId={}", userId, postId, re);
+            }
+            throw new BizException(ErrorCode.INTERNAL_ERROR, "点赞失败");
+        }
         return count;
     }
 }
