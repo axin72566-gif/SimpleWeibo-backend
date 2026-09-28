@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * 敏感词 DFA:词集合按字符逐层注册到节点树,节点即状态、字符即迁移边、词尾节点即接受态;
- * 扫描文本时从每个下标出发沿迁移边走,走到接受态即命中,
- * 匹配复杂度为 文本长度*最长词长,低于逐词 contains 的 词数*文本长度
- */
+/** 敏感词 DFA:节点树匹配,文本命中任一敏感词即返回 true */
 public class SensitiveWordDfa {
 
     private final DfaNode root;

@@ -3,10 +3,7 @@ package org.example.simpleweibobackend.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 全局错误码:code 为 5 位业务码(40xxx 客户端错误 / 50xxx 服务端错误),返回在响应体 Result.code;
- * httpStatus 独立决定 HTTP 响应状态码,仅做传输层映射
- */
+/** 全局错误码:code 返回在 Result.code,httpStatus 决定 HTTP 状态码 */
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
@@ -17,6 +14,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(40400, 404, "用户不存在"),
     POST_NOT_FOUND(40401, 404, "帖子不存在"),
     USERNAME_EXISTS(40900, 409, "用户名已存在"),
+    REPEAT_LIKE(40901, 409, "请勿重复点赞"),
     AUDIT_REJECTED(42200, 400, "内容未通过审核"),
     INTERNAL_ERROR(50000, 500, "服务器内部错误");
 

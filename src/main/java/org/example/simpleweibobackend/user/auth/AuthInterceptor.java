@@ -10,10 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/**
- * 登录态校验拦截器:解析 Authorization: Bearer {token},查 Redis 校验后写入 {@link UserContext},
- * 校验失败抛 BizException,由全局异常处理统一转为 401 Result 响应
- */
+/** 登录态校验:token 有效则写入 UserContext,无效抛 401 */
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {

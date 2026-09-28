@@ -4,10 +4,3 @@ spring:
 
   profiles:
     active: dev
-
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true

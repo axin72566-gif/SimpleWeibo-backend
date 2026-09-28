@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-/**
- * 全局异常处理:继承 {@link ResponseEntityExceptionHandler} 接管 Spring MVC 标准异常,
- * 连同业务异常、未预期异常统一包装为 {@link Result} 响应
- */
+/** 全局异常处理:业务异常与未预期异常统一包装为 {@link Result} 响应 */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {

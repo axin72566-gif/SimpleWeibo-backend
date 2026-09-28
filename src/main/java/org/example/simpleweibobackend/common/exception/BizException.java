@@ -3,10 +3,7 @@ package org.example.simpleweibobackend.common.exception;
 import lombok.Getter;
 import org.example.simpleweibobackend.common.ErrorCode;
 
-/**
- * 业务异常:携带 ErrorCode,由 GlobalExceptionHandler 统一转为 Result 响应;
- * 提示文案与错误码默认文案一致时用单参构造,需要补充上下文(如资源ID)时用双参构造
- */
+/** 业务异常:携带 ErrorCode,由全局异常处理统一转为 Result 响应 */
 @Getter
 public class BizException extends RuntimeException {
 
