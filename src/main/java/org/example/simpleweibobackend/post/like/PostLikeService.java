@@ -20,9 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostLikeService {
 
-    private static final String POST_LIKE_USERS = "post:like:users:";
-    private static final String POST_LIKE_COUNT = "post:like:count:";
-
     /** SADD 成功则 INCR 并返回最新点赞数;已点赞返回 nil 表示失败 */
     private static final RedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
             if redis.call('SADD', KEYS[1], ARGV[1]) == 1 then
@@ -53,7 +50,7 @@ public class PostLikeService {
         Long count;
         try {
             count = stringRedisTemplate.execute(LIKE_SCRIPT,
-                    List.of(POST_LIKE_USERS + postId, POST_LIKE_COUNT + postId),
+                    List.of(PostLikeRedisKey.POST_LIKE_USERS + postId, PostLikeRedisKey.POST_LIKE_COUNT + postId),
                     String.valueOf(userId));
         } catch (Exception e) {
             log.error("点赞失败, Redis执行Lua脚本异常: userId={}, postId={}", userId, postId, e);
@@ -70,7 +67,7 @@ public class PostLikeService {
             log.error("点赞事件发送失败,回滚 Redis: userId={}, postId={}", userId, postId, e);
             try {
                 stringRedisTemplate.execute(UNLIKE_ROLLBACK_SCRIPT,
-                        List.of(POST_LIKE_USERS + postId, POST_LIKE_COUNT + postId),
+                        List.of(PostLikeRedisKey.POST_LIKE_USERS + postId, PostLikeRedisKey.POST_LIKE_COUNT + postId),
                         String.valueOf(userId));
             } catch (Exception re) {
                 log.error("Redis 回滚失败,计数存在漂移,待对账修复: userId={}, postId={}", userId, postId, re);
