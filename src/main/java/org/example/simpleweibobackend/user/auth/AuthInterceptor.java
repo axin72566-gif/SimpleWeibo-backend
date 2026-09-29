@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/** 登录态校验:token 有效则写入 UserContext,无效抛 401 */
+/** 登录态校验 */
 @Slf4j
 @Component
 @RequiredArgsConstructor

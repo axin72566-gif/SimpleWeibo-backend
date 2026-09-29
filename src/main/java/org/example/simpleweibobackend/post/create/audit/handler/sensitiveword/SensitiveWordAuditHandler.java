@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * 敏感词审核节点:每次审核实时查表构建 DFA(改词即时生效),标题或正文命中任一敏感词即累加风险分
- */
+/** 敏感词审核节点 */
 @Component
 @Order(0)
 @RequiredArgsConstructor

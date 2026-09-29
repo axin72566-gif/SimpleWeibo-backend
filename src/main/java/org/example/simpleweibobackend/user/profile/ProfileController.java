@@ -21,9 +21,7 @@ public class ProfileController {
 
     private final UserMapper userMapper;
 
-    /**
-     * 查看当前登录用户的个人信息,userId 取自 UserContext(由 AuthInterceptor 校验写入)
-     */
+    /** 查看当前登录用户的个人信息 */
     @GetMapping("/me")
     public Result<UserVO> me() {
         User user = userMapper.selectById(UserContext.getUserId());

@@ -2,10 +2,10 @@ package org.example.simpleweibobackend.user.auth;
 
 import java.time.Duration;
 
-/** 登录态公共定义:token 的 Redis key 规则、有效期与当前线程用户信息 */
+/** 登录态公共定义 */
 public final class UserContext {
 
-    /** 登录态 key 前缀,实际 key = 前缀 + token */
+    /** 登录态 key 前缀 */
     public static final String LOGIN_TOKEN = "user:login:token:";
 
     public static final Duration TOKEN_TTL = Duration.ofDays(7);

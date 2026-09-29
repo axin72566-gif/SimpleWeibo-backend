@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-/** 插入/更新时自动填充 createTime/updateTime */
+/** 字段自动填充 */
 @Component
 public class MyMetaObjectHandlerConfig implements MetaObjectHandler {
 

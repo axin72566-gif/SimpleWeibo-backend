@@ -6,9 +6,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 审核上下文:责任链各节点共享的待审核信息与累计风险分
- */
+/** 审核上下文 */
 @Data
 @Builder
 public class AuditContext {
@@ -17,9 +15,7 @@ public class AuditContext {
 
     private String content;
 
-    /**
-     * 各节点累加,裁决节点按阈值判定
-     */
+    /** 累计风险分 */
     @Builder.Default
     private Long riskScore = 0L;
 

@@ -8,9 +8,7 @@ import org.example.simpleweibobackend.post.create.audit.handler.PostAuditHandler
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-/**
- * 审核链末位节点:按累计风险分裁决,达到阈值直接拒绝,链路走完即视为通过
- */
+/** 审核裁决节点 */
 @Slf4j
 @Component
 @Order(9999)

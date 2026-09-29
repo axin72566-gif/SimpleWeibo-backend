@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/** 敏感词 DFA:节点树匹配,文本命中任一敏感词即返回 true */
+/** 敏感词 DFA */
 public class SensitiveWordDfa {
 
     private final DfaNode root;

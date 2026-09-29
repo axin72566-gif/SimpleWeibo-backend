@@ -16,8 +16,6 @@ import org.example.simpleweibobackend.common.BaseEntity;
 @TableName("sensitive_word")
 public class SensitiveWord extends BaseEntity {
 
-    /**
-     * 唯一
-     */
+    /** 唯一 */
     private String word;
 }

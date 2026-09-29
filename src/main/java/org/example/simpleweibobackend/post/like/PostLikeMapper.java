@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface PostLikeMapper extends BaseMapper<PostLike> {
 
-    /** 批量插入,INSERT IGNORE + 唯一索引保证幂等 */
+    /** 批量插入 */
     @Insert("<script>"
             + "INSERT IGNORE INTO post_like(user_id, post_id) VALUES "
             + "<foreach collection='likes' item='l' separator=','>(#{l.userId}, #{l.postId})</foreach>"

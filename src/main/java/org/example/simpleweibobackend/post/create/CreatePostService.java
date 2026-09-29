@@ -10,9 +10,7 @@ import org.example.simpleweibobackend.post.create.audit.AuditContext;
 import org.example.simpleweibobackend.post.create.audit.PostAuditChain;
 import org.springframework.stereotype.Service;
 
-/**
- * 发帖服务:先过审核责任链,被拒则抛业务异常,走完即落库
- */
+/** 发帖服务 */
 @Service
 @RequiredArgsConstructor
 public class CreatePostService {

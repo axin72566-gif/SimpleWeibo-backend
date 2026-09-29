@@ -19,9 +19,7 @@ public class LogoutController {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * 退出登录:删除 Redis 中的登录态,token 立即失效
-     */
+    /** 退出登录 */
     @PostMapping("/logout")
     public Result<Void> logout() {
         try {

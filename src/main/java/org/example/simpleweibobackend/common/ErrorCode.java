@@ -3,7 +3,7 @@ package org.example.simpleweibobackend.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/** 全局错误码:code 返回在 Result.code,httpStatus 决定 HTTP 状态码 */
+/** 全局错误码 */
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {

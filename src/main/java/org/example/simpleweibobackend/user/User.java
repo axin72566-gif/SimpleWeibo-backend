@@ -18,9 +18,7 @@ public class User extends BaseEntity {
 
     private String username;
 
-    /**
-     * BCrypt 摘要,不存明文
-     */
+    /** BCrypt 摘要 */
     private String password;
 
     private String nickname;

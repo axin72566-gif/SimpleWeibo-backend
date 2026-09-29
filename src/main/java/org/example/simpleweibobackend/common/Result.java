@@ -2,9 +2,7 @@ package org.example.simpleweibobackend.common;
 
 import lombok.Getter;
 
-/**
- * 统一响应体:所有接口返回 {code, message, data} 结构
- */
+/** 统一响应体 */
 @Getter
 public class Result<T> {
 

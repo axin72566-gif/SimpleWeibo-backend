@@ -17,9 +17,7 @@ public class CreatePostController {
 
     private final CreatePostService createPostService;
 
-    /**
-     * 发布新帖子,先经审核责任链再入库;userId 取自登录态,由 AuthInterceptor 校验并写入 UserContext
-     */
+    /** 发布新帖子 */
     @PostMapping
     public Result<PostVO> createPost(@Valid @RequestBody CreatePostRequest request) {
         return Result.success(createPostService.createPost(request, UserContext.getUserId()));

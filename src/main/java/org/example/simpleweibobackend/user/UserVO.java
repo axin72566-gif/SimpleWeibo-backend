@@ -5,9 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * 对外的脱敏用户信息,不含密码
- */
+/** 对外的用户信息,不含密码 */
 @Data
 @AllArgsConstructor
 public class UserVO {

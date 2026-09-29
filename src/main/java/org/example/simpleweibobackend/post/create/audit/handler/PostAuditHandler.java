@@ -4,8 +4,6 @@ import org.example.simpleweibobackend.post.create.audit.AuditContext;
 
 public interface PostAuditHandler {
 
-    /**
-     * 向上下文累加风险分,不做最终裁决
-     */
+    /** 执行审核 */
     void handle(AuditContext context);
 }

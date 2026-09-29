@@ -8,14 +8,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
-/** 点赞事件发布者:事件 JSON 序列化后发往 post-likes,以 postId 为 key 保证同帖有序;
- *  同步等待 broker 确认,失败抛异常,由调用方回滚 Redis,保证 like() 返回成功即两边都已落定 */
+/** 点赞事件发布者 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PostLikePublisher {
 
-    /** 等待 broker 确认的超时;超时按失败处理,触发回滚 */
+    /** 等待 broker 确认的超时 */
     private static final long SEND_TIMEOUT_SECONDS = 3;
 
     private final KafkaTemplate<String, String> kafkaTemplate;

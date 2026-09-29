@@ -15,7 +15,7 @@ public class PostLikeController {
 
     private final PostLikeService likeService;
 
-    /** 点赞,幂等;userId 取自登录态 */
+    /** 点赞 */
     @PostMapping("/likes/{postId}")
     public Result<Long> like(@PathVariable Long postId) {
         return Result.success(likeService.like(UserContext.getUserId(), postId));

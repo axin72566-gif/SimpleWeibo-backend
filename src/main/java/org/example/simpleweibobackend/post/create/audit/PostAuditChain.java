@@ -6,9 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * 发帖审核责任链:按 {@code @Order} 顺序执行所有节点,由末位裁决节点按总分判定
- */
+/** 发帖审核责任链 */
 @Component
 @RequiredArgsConstructor
 public class PostAuditChain {

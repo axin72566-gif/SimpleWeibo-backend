@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** 点赞事件消费者:批量消费 Kafka 消息,聚合落库 MySQL */
+/** 点赞事件消费者 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,18 +27,17 @@ public class PostLikeConsumer {
     private final PostMapper postMapper;
     private final PostLikeMapper postLikeMapper;
 
-    /** 批量落库:关系表插入几行,like_count 就加几 */
+    /** 批量落库 */
     @KafkaListener(topics = PostLikeTopic.TOPIC, groupId = "post-likes-group", batch = "true")
     @Transactional(rollbackFor = Exception.class)
     public void onLikeEvent(List<ConsumerRecord<String, String>> records) {
-        // 按帖子聚合本批事件
         Map<Long, List<PostLike>> likesByPost = new HashMap<>();
         for (ConsumerRecord<String, String> record : records) {
             PostLikeEvent event = JSONUtil.toBean(record.value(), PostLikeEvent.class);
             likesByPost.computeIfAbsent(event.getPostId(), k -> new ArrayList<>())
                     .add(PostLike.builder().postId(event.getPostId()).userId(event.getUserId()).build());
         }
-        // 重试时重复事件被唯一索引拦下插入 0 行,计数不会重复加
+        // 重复事件被唯一索引拦下,不会重复计数
         for (Map.Entry<Long, List<PostLike>> entry : likesByPost.entrySet()) {
             int inserted = postLikeMapper.insertBatch(entry.getValue());
             if (inserted > 0) {

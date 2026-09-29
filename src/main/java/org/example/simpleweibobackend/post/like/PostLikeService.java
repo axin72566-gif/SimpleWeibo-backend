@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/** 点赞服务:Lua 原子 SADD + INCR,新增点赞同步发 Kafka 事件异步落库;发送失败回滚 Redis,保证不产生脏数据 */
+/** 点赞服务 */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostLikeService {
 
-    /** SADD 成功则 INCR 并返回最新点赞数;已点赞返回 nil 表示失败 */
+    /** 点赞脚本:SADD 成功则 INCR */
     private static final RedisScript<Long> LIKE_SCRIPT = new DefaultRedisScript<>("""
             if redis.call('SADD', KEYS[1], ARGV[1]) == 1 then
                 return redis.call('INCR', KEYS[2])
@@ -28,7 +28,7 @@ public class PostLikeService {
             return nil
             """, Long.class);
 
-    /** 发送失败时的回滚:SREM 成功才 DECR,与点赞脚本对称,防止重复回滚导致多减 */
+    /** 回滚脚本:SREM 成功才 DECR */
     private static final RedisScript<Long> UNLIKE_ROLLBACK_SCRIPT = new DefaultRedisScript<>("""
             if redis.call('SREM', KEYS[1], ARGV[1]) == 1 then
                 return redis.call('DECR', KEYS[2])
@@ -40,7 +40,7 @@ public class PostLikeService {
     private final PostLikePublisher postLikePublisher;
     private final StringRedisTemplate stringRedisTemplate;
 
-    /** 点赞;成功返回最新点赞数,重复点赞返回失败 */
+    /** 点赞,返回最新点赞数 */
     public Long like(Long userId, Long postId) {
         if (postMapper.selectById(postId) == null) {
             log.info("点赞失败, 帖子不存在: userId={}, postId={}", userId, postId);
