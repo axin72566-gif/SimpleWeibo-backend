@@ -1,6 +1,7 @@
 package org.example.simpleweibobackend.post.create;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.Post;
@@ -11,6 +12,7 @@ import org.example.simpleweibobackend.post.create.audit.PostAuditChain;
 import org.springframework.stereotype.Service;
 
 /** 发帖服务 */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreatePostService {
@@ -33,6 +35,7 @@ public class CreatePostService {
                 .build();
         int insert = postMapper.insert(post);
         if (insert != 1) {
+            log.error("发帖失败, 数据库操作失败: userId={}", userId);
             throw new BizException(ErrorCode.INTERNAL_ERROR, "发帖失败, 数据库操作失败");
         }
         return PostVO.from(post);
