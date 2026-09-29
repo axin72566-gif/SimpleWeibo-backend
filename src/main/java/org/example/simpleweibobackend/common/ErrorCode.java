@@ -15,6 +15,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(40401, 404, "帖子不存在"),
     USERNAME_EXISTS(40900, 409, "用户名已存在"),
     REPEAT_LIKE(40901, 409, "请勿重复点赞"),
+    REPEAT_FOLLOW(40902, 409, "请勿重复关注"),
     AUDIT_REJECTED(42200, 400, "内容未通过审核"),
     INTERNAL_ERROR(50000, 500, "服务器内部错误"),
     LOGOUT_FAILED(50001, 500, "退出登录失败");
