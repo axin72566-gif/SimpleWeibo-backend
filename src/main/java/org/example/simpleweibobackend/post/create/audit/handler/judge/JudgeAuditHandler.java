@@ -20,7 +20,7 @@ public class JudgeAuditHandler implements PostAuditHandler {
     public void handle(AuditContext context) {
         if (context.getRiskScore() >= REJECT_THRESHOLD) {
             log.warn("发帖被拒绝: 风险分={}, 原因={}", context.getRiskScore(), context.getReasons());
-            throw new BizException(ErrorCode.AUDIT_REJECTED, String.join("；", context.getReasons()));
+            throw new BizException(ErrorCode.AUDIT_REJECTED);
         }
     }
 }

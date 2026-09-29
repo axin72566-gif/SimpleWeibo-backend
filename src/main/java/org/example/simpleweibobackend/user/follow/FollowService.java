@@ -18,7 +18,7 @@ public class FollowService {
     /** 关注用户 */
     public void follow(Long userId, Long followedId) {
         if (userId.equals(followedId)) {
-            throw new BizException(ErrorCode.PARAM_ERROR, "不能关注自己");
+            throw new BizException(ErrorCode.CANNOT_FOLLOW_SELF);
         }
         if (userMapper.selectById(followedId) == null) {
             log.info("关注失败, 用户不存在: userId={}, followedId={}", userId, followedId);

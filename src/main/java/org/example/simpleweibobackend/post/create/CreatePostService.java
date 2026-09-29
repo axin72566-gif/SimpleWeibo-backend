@@ -36,7 +36,7 @@ public class CreatePostService {
         int insert = postMapper.insert(post);
         if (insert != 1) {
             log.error("发帖失败, 数据库操作失败: userId={}", userId);
-            throw new BizException(ErrorCode.INTERNAL_ERROR, "发帖失败, 数据库操作失败");
+            throw new BizException(ErrorCode.INTERNAL_ERROR);
         }
         return PostVO.from(post);
     }

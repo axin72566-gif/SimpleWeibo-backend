@@ -44,7 +44,7 @@ public class PostLikeService {
     public Long like(Long userId, Long postId) {
         if (postMapper.selectById(postId) == null) {
             log.info("点赞失败, 帖子不存在: userId={}, postId={}", userId, postId);
-            throw new BizException(ErrorCode.POST_NOT_FOUND, "帖子不存在");
+            throw new BizException(ErrorCode.POST_NOT_FOUND);
         }
 
         Long count;
@@ -54,11 +54,11 @@ public class PostLikeService {
                     String.valueOf(userId));
         } catch (Exception e) {
             log.error("点赞失败, Redis执行Lua脚本异常: userId={}, postId={}", userId, postId, e);
-            throw new BizException(ErrorCode.INTERNAL_ERROR, "点赞失败");
+            throw new BizException(ErrorCode.INTERNAL_ERROR);
         }
         if (count == null) {
             log.info("重复点赞: userId={}, postId={}", userId, postId);
-            throw new BizException(ErrorCode.REPEAT_LIKE, "请勿重复点赞");
+            throw new BizException(ErrorCode.REPEAT_LIKE);
         }
 
         try {
@@ -72,7 +72,7 @@ public class PostLikeService {
             } catch (Exception re) {
                 log.error("Redis 回滚失败,计数存在漂移,待对账修复: userId={}, postId={}", userId, postId, re);
             }
-            throw new BizException(ErrorCode.INTERNAL_ERROR, "点赞失败");
+            throw new BizException(ErrorCode.INTERNAL_ERROR);
         }
         return count;
     }

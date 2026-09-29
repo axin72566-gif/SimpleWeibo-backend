@@ -13,9 +13,4 @@ public class BizException extends RuntimeException {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
-
-    public BizException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
-    }
 }

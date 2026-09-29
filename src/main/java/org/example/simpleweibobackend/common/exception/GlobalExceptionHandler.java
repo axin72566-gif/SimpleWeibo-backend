@@ -47,14 +47,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
+    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception ex,
                                                              Object body,
                                                              @NonNull HttpHeaders headers,
                                                              @NonNull HttpStatusCode statusCode,
                                                              @NonNull WebRequest request) {
-        String message = ex.getMessage() != null ? ex.getMessage() : "请求处理失败";
+        // 兜底统一映射为五位数业务码: 4xx 归为参数类错误并保留框架的具体提示, 5xx 对外只暴露通用文案
+        if (statusCode.is5xxServerError()) {
+            return ResponseEntity.status(statusCode)
+                    .headers(headers)
+                    .body(Result.fail(ErrorCode.INTERNAL_ERROR));
+        }
+        String message = ex.getMessage() != null ? ex.getMessage() : ErrorCode.PARAM_ERROR.getMessage();
         return ResponseEntity.status(statusCode)
                 .headers(headers)
-                .body(Result.fail(statusCode.value(), message));
+                .body(Result.fail(ErrorCode.PARAM_ERROR.getCode(), message));
     }
 }
