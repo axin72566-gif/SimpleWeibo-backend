@@ -1,4 +1,4 @@
-package org.example.simpleweibobackend.user.profile;
+package org.example.simpleweibobackend.user.query;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
