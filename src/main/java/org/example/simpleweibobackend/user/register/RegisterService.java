@@ -1,6 +1,5 @@
 package org.example.simpleweibobackend.user.register;
 
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class RegisterService {
         User user = User.builder()
                 .username(request.getUsername())
                 .password(BCrypt.hashpw(request.getPassword()))
-                .nickname("user_" + RandomUtil.randomString(6))
+                .nickname(request.getUsername())
                 .build();
         try {
             userMapper.insert(user);
