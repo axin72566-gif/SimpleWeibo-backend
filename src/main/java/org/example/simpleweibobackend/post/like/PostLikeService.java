@@ -1,9 +1,11 @@
 package org.example.simpleweibobackend.post.like;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
+import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.like.kafka.PostLikeEvent;
 import org.example.simpleweibobackend.post.like.kafka.PostLikeEventType;
@@ -38,6 +40,7 @@ public class PostLikeService {
             """, Long.class);
 
     private final PostMapper postMapper;
+    private final PostLikeMapper postLikeMapper;
     private final PostLikePublisher postLikePublisher;
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -112,5 +115,37 @@ public class PostLikeService {
         } catch (Exception re) {
             log.error("Redis 回滚失败,计数存在漂移,待对账修复: userId={}, postId={}", userId, postId, re);
         }
+    }
+
+    /** 查询用户是否已点赞该帖子 */
+    public Boolean hasLiked(Long userId, Long postId) {
+        String usersKey = PostLikeRedisKey.POST_LIKE_USERS + postId;
+        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(usersKey))) {
+            return Boolean.TRUE.equals(
+                    stringRedisTemplate.opsForSet().isMember(usersKey, String.valueOf(userId)));
+        }
+        // 键不存在:帖子从未被点赞或 Redis 数据丢失,回源数据库
+        if (postMapper.selectById(postId) == null) {
+            log.info("查询点赞状态失败, 帖子不存在: userId={}, postId={}", userId, postId);
+            throw new BizException(ErrorCode.POST_NOT_FOUND);
+        }
+        return postLikeMapper.selectCount(new LambdaQueryWrapper<PostLike>()
+                .eq(PostLike::getUserId, userId)
+                .eq(PostLike::getPostId, postId)) > 0;
+    }
+
+    /** 查询帖子点赞数 */
+    public Long getLikeCount(Long postId) {
+        String count = stringRedisTemplate.opsForValue().get(PostLikeRedisKey.POST_LIKE_COUNT + postId);
+        if (count != null) {
+            return Long.parseLong(count);
+        }
+        // 键不存在:帖子从未被点赞或 Redis 数据丢失,回源数据库
+        Post post = postMapper.selectById(postId);
+        if (post == null) {
+            log.info("查询点赞数失败, 帖子不存在: postId={}", postId);
+            throw new BizException(ErrorCode.POST_NOT_FOUND);
+        }
+        return post.getLikeCount() == null ? 0L : post.getLikeCount();
     }
 }
