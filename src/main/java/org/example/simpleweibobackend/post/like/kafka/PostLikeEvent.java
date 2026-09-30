@@ -13,4 +13,6 @@ public class PostLikeEvent {
     private Long postId;
 
     private Long userId;
+
+    private PostLikeEventType type = PostLikeEventType.LIKE;
 }
