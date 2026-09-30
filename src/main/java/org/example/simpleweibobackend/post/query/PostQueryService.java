@@ -10,9 +10,13 @@ import org.example.simpleweibobackend.common.exception.BizException;
 import org.example.simpleweibobackend.post.Post;
 import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.PostVO;
+import org.example.simpleweibobackend.user.User;
+import org.example.simpleweibobackend.user.UserMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,6 +26,7 @@ public class PostQueryService {
     private static final int MAX_PAGE_SIZE = 100;
 
     private final PostMapper postMapper;
+    private final UserMapper userMapper;
 
     /** 根据 id 查询帖子详情,帖子不存在时抛 POST_NOT_FOUND */
     public PostVO getPostDetail(Long postId) {
@@ -30,7 +35,7 @@ public class PostQueryService {
             log.info("查询帖子详情失败, 帖子不存在: postId={}", postId);
             throw new BizException(ErrorCode.POST_NOT_FOUND);
         }
-        return PostVO.from(post);
+        return PostVO.from(post, userMapper.selectById(post.getUserId()));
     }
 
     /** 分页查询帖子,按创建时间倒序,页码从 1 开始,单页条数上限 100 */
@@ -39,7 +44,14 @@ public class PostQueryService {
         size = Math.clamp(size, 1, MAX_PAGE_SIZE);
         Page<Post> result = postMapper.selectPage(new Page<>(page, size),
                 new LambdaQueryWrapper<Post>().orderByDesc(Post::getCreateTime, Post::getId));
-        List<PostVO> records = result.getRecords().stream().map(PostVO::from).toList();
+        List<Post> posts = result.getRecords();
+        List<Long> authorIds = posts.stream().map(Post::getUserId).distinct().toList();
+        Map<Long, User> authors = authorIds.isEmpty() ? Map.of()
+                : userMapper.selectByIds(authorIds).stream()
+                        .collect(Collectors.toMap(User::getId, u -> u));
+        List<PostVO> records = posts.stream()
+                .map(post -> PostVO.from(post, authors.get(post.getUserId())))
+                .toList();
         return PageVO.of(records, result.getTotal(), page, size);
     }
 }

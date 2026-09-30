@@ -9,6 +9,7 @@ import org.example.simpleweibobackend.post.PostMapper;
 import org.example.simpleweibobackend.post.PostVO;
 import org.example.simpleweibobackend.post.create.audit.AuditContext;
 import org.example.simpleweibobackend.post.create.audit.PostAuditChain;
+import org.example.simpleweibobackend.user.UserMapper;
 import org.springframework.stereotype.Service;
 
 /** 发帖服务 */
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class CreatePostService {
 
     private final PostMapper postMapper;
+
+    private final UserMapper userMapper;
 
     private final PostAuditChain postAuditChain;
 
@@ -38,6 +41,6 @@ public class CreatePostService {
             log.error("发帖失败, 数据库操作失败: userId={}", userId);
             throw new BizException(ErrorCode.INTERNAL_ERROR);
         }
-        return PostVO.from(post);
+        return PostVO.from(post, userMapper.selectById(userId));
     }
 }

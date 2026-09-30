@@ -2,6 +2,8 @@ package org.example.simpleweibobackend.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.example.simpleweibobackend.user.User;
+import org.example.simpleweibobackend.user.UserVO;
 
 import java.time.LocalDateTime;
 
@@ -21,10 +23,14 @@ public class PostVO {
 
     private LocalDateTime createTime;
 
-    public static PostVO from(Post post) {
+    /** 帖子作者 */
+    private UserVO author;
+
+    public static PostVO from(Post post, User author) {
         return new PostVO(post.getId(), post.getUserId(),
                 post.getTitle(), post.getContent(),
                 post.getLikeCount() == null ? 0L : post.getLikeCount(),
-                post.getCreateTime());
+                post.getCreateTime(),
+                UserVO.from(author));
     }
 }
