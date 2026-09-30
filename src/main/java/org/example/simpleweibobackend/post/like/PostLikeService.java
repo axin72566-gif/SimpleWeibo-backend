@@ -66,7 +66,11 @@ public class PostLikeService {
         }
 
         try {
-            postLikePublisher.publish(new PostLikeEvent(postId, userId, PostLikeEventType.LIKE));
+            postLikePublisher.publish(PostLikeEvent.builder()
+                    .postId(postId)
+                    .userId(userId)
+                    .type(PostLikeEventType.LIKE)
+                    .build());
         } catch (Exception e) {
             log.error("点赞事件发送失败,回滚 Redis: userId={}, postId={}", userId, postId, e);
             rollbackRedis(UNLIKE_SCRIPT, userId, postId);
@@ -97,7 +101,11 @@ public class PostLikeService {
         }
 
         try {
-            postLikePublisher.publish(new PostLikeEvent(postId, userId, PostLikeEventType.UNLIKE));
+            postLikePublisher.publish(PostLikeEvent.builder()
+                    .postId(postId)
+                    .userId(userId)
+                    .type(PostLikeEventType.UNLIKE)
+                    .build());
         } catch (Exception e) {
             log.error("取消点赞事件发送失败,回滚 Redis: userId={}, postId={}", userId, postId, e);
             rollbackRedis(LIKE_SCRIPT, userId, postId);
