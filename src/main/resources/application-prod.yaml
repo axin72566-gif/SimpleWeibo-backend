@@ -52,6 +52,12 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     # 生产环境不输出 SQL 日志
 
+app:
+  cors:
+    # 同域 Nginx 反代部署无需跨域, 保持为空即不开放
+    # 若改为前后端分离部署, 填入前端来源(逗号分隔), 如: https://weibo.example.com
+    allowed-origins: ""
+
 logging:
   level:
     root: info

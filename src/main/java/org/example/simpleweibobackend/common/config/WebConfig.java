@@ -2,10 +2,13 @@ package org.example.simpleweibobackend.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.user.auth.AuthInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -13,10 +16,19 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
 
+    /**
+     * 跨域放行来源, 逗号分隔; Nginx 同域反代部署不产生跨域请求, 留空即不开放
+     */
+    @Value("${app.cors.allowed-origins:}")
+    private List<String> allowedOrigins;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        if (allowedOrigins.isEmpty()) {
+            return;
+        }
         registry.addMapping("/**")
-                .allowedOriginPatterns("*")
+                .allowedOriginPatterns(allowedOrigins.toArray(String[]::new))
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)

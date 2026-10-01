@@ -45,3 +45,8 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+app:
+  cors:
+    # 本地开发保持跨域全开; 生产 prod 配置默认不开放
+    allowed-origins: "*"
