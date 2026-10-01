@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.example.simpleweibobackend.common.ErrorCode;
 import org.example.simpleweibobackend.common.exception.BizException;
+import org.example.simpleweibobackend.ratelimit.limiter.RateLimiter;
 import org.example.simpleweibobackend.user.auth.UserContext;
 import org.springframework.stereotype.Component;
 

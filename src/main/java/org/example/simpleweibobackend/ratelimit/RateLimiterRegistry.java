@@ -1,5 +1,6 @@
 package org.example.simpleweibobackend.ratelimit;
 
+import org.example.simpleweibobackend.ratelimit.limiter.RateLimiter;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;

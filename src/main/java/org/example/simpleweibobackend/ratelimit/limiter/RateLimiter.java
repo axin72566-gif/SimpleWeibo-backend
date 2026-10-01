@@ -1,4 +1,6 @@
-package org.example.simpleweibobackend.ratelimit;
+package org.example.simpleweibobackend.ratelimit.limiter;
+
+import org.example.simpleweibobackend.ratelimit.RateLimitAlgorithm;
 
 import java.time.Duration;
 

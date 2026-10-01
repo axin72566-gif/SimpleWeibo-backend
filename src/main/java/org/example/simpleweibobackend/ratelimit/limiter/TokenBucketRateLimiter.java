@@ -2,7 +2,6 @@ package org.example.simpleweibobackend.ratelimit.limiter;
 
 import lombok.RequiredArgsConstructor;
 import org.example.simpleweibobackend.ratelimit.RateLimitAlgorithm;
-import org.example.simpleweibobackend.ratelimit.RateLimiter;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
