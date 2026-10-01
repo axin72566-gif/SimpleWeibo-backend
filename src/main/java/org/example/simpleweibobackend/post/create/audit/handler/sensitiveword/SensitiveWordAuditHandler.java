@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SensitiveWordAuditHandler implements PostAuditHandler {
 
-    private static final Long SENSITIVE_WORD_SCORE = 80L;
+    /** 必须单独达到裁决阈值(JudgeAuditHandler.REJECT_THRESHOLD=100), 保证命中敏感词必拒, 不受远程校验随机分影响 */
+    private static final Long SENSITIVE_WORD_SCORE = 100L;
     private static final String SENSITIVE_WORD_REASON = "标题或正文包含敏感词";
 
     private final SensitiveWordMapper sensitiveWordMapper;
